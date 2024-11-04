@@ -1,0 +1,148 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  background-color: #333;
+}
+
+.navbar {
+  height: 3.5rem;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.nav-item-right {
+  flex: 1;
+  flex-direction: row;
+  display: flex;
+  direction: rtl;
+  text-align: right;
+}
+
+.nav-item-left {
+  flex: 1;
+  flex-direction: row;
+  display: flex;
+}
+.nav-search {
+  flex: 2;
+  width: 100%;
+
+  flex-direction: row;
+  display: flex;
+}
+
+.nav-item-search {
+  margin: 0.7rem;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-item {
+  margin: 1rem;
+  display: flex;
+  flex-direction: row;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.nav-item-active {
+  margin: 1rem;
+  display: flex;
+  flex-direction: row;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.nav-item a {
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: none;
+}
+.nav-item-active a {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.596);
+  text-decoration: none;
+}
+
+.nav-item a:hover {
+  color: rgba(255, 255, 255, 0.596);
+}
+
+#nav-item-search-input {
+  flex: 10;
+  font-size: 1.2rem;
+  padding-left: 0.5rem;
+  margin-right: 0;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.849);
+}
+
+#nav-item-search-submit {
+  margin-left: 0;
+  background-color: #9c0404;
+  border-style: solid;
+  cursor: pointer;
+  border: none;
+  flex: 1;
+  color: white;
+  font-size: 1.2rem;
+}
+
+#nav-item-search-submit:hover {
+  background-color: #5f040480;
+}
+
+#content {
+  padding: 1rem;
+  height: 600px;
+}
+
+#content h1 {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem;
+  width: 80%;
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+.channel-info {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+}
+.channel-info img {
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  align-items: center;
+  border-radius: 100%;
+  cursor: pointer;
+}
+
+.channel-info h2 {
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 0.5rem;
+}
+
+.video-info {
+  flex: 1;
+  background-color: gray;
+}
