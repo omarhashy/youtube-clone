@@ -1,0 +1,68 @@
+.container_ {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(0, 0, 0, 0.082);
+  color: #333; /* Dark text color */
+  border-radius: 0.5rem; /* 8px */
+  padding: 1.875rem; /* 30px */
+  width: 20rem; /* 320px */
+}
+
+.title_ {
+  margin-bottom: 1.25rem; /* 20px */
+  font-size: 1.5rem; /* 24px */
+  font-weight: 600;
+  color: #333;
+}
+
+.form_ {
+  display: flex;
+  flex-direction: column;
+}
+
+.label_ {
+  margin: 0.3125rem; /* 5px */
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: #333;
+}
+
+.input_ {
+  padding: 0.75rem; /* 12px */
+  margin-bottom: 0.9375rem; /* 15px */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 0.25rem; /* 4px */
+  background-color: #fff; /* White background for inputs */
+  color: #333;
+  font-size: 1rem; /* 16px */
+  transition: border-color 0.3s ease-in-out;
+}
+
+#channel-picture {
+  margin-bottom: 0.9375rem; /* 15px */
+}
+
+.input_:focus {
+  border-color: rgba(8, 1, 1, 0.404); /* Green border on focus */
+  outline: none;
+}
+
+.button_ {
+  padding: 0.75rem; /* 12px */
+  border: 1px solid #ccc;
+  border-radius: 0.25rem; /* 4px */
+  background-color: #333; /* Dark button background */
+  color: white; /* White text for button */
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button_:hover {
+  background-color: #000000; /* Green button on hover */
+}
+
+.button_:active {
+  background-color: #000000; /* Slightly darker green on active */
+}

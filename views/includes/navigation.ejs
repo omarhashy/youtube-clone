@@ -1,15 +1,15 @@
 <nav>
   <div class="navbar">
     <div class="nav-item-left">
-      <div class="<%=( path === '/' )? 'nav-item-active' : 'nav-item' %>">
-        <a href="">Home</a>
+      <div class="<%=( pageTile === "Home" )? 'nav-item-active' : 'nav-item' %>">
+        <a href="\">Home</a>
       </div>
-      <div class="nav-item">
-        <a href="\">Subscriptions</a>
+      <div class="<%=( pageTile === "Subscriptions" )? 'nav-item-active' : 'nav-item' %>">
+        <a href="\feed\subscriptions">Subscriptions</a>
       </div>
 
-      <div class="nav-item">
-        <a href="\">Liked</a>
+      <div class="<%=( pageTile === "Liked" )? 'nav-item-active' : 'nav-item' %>">
+        <a href="\feed\liked">Liked</a>
       </div>
     </div>
 
@@ -24,12 +24,9 @@
       <div class="nav-item">
         <a href="">log out</a>
       </div>
-      <div class="nav-item">
-        <a href="">Upload video</a>
-      </div>
 
       <div class="nav-item">
-        <a href="\">My channel</a>
+        <a href="\channel\ljsalh">My channel</a>
       </div>
     </div>
   </div>

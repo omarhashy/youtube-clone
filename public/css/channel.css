@@ -1,0 +1,65 @@
+#channel-info-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+
+#channel-info-container img {
+  width: 10rem;
+  height: 10rem;
+  overflow: hidden;
+  align-items: center;
+  border-radius: 100%;
+}
+
+#channel-info-container-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-left: 2rem;
+}
+#channel-info-container-info h1 {
+  margin: 0;
+  padding: 0;
+}
+
+#handel-subscribers {
+  margin: 0;
+  padding: 0;
+  margin-top: 0.2rem;
+  color: rgba(0, 0, 0, 0.541);
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+#subscribe-button-container {
+  flex: 1;
+  /* background-color: rgba(0, 0, 0, 0.24); */
+  display: flex;
+  flex-direction: column;
+}
+
+#subscribe-button-container button {
+  margin-bottom: auto;
+  margin-top: auto;
+  width: fit-content;
+}
+.subscribe-button {
+  font-size: 1rem;
+  background-color: rgb(185, 6, 6);
+  color: white;
+  border: none;
+  /* height: 30px;
+        width: 105px; */
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  padding-right: 16px;
+  padding-left: 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.subscribe-button:hover {
+  opacity: 0.8;
+}
