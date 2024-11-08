@@ -12,7 +12,15 @@
     <div id="content">
       <h1><%=PageHeader%></h1>
       <hr />
-      <%- include('../forms/register.ejs') %>
+      <% if(PageHeader === "Register"){ %> 
+      <%- include('../forms/register.ejs') %> 
+      <% }else if(PageHeader === "Login"){%> 
+        <%-include('../forms/login.ejs') %> 
+    <% }else if(PageHeader === "Reset Password"){%> 
+        <%-include('../forms/reset-password.ejs') %> 
+    <% }  else if(PageHeader === "Create a new password"){%> 
+        <%-include('../forms/reset-password-token.ejs') %> 
+    <% } %>
     </div>
   </body>
 </html>
