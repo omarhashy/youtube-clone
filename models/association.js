@@ -66,8 +66,8 @@ subscription.belongsTo(channel, {
 channel.hasOne(token);
 
 sequelize
-  //   .sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .catch((err) => {
     console.error(err);
   });

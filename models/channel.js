@@ -9,8 +9,12 @@ const Channel = sequelize.define("channel", {
     primaryKey: true,
   },
   handel: {
-    type: DataTypes.STRING(15),
+    type: DataTypes.STRING(20),
     unique: true,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   email: {
@@ -19,12 +23,16 @@ const Channel = sequelize.define("channel", {
     allowNull: false,
   },
   name: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  channelPicturePath: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  channelPictureFile: {
-    type: DataTypes.STRING,
-    allowNull: false,
+  verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
 });
 

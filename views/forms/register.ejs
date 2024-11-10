@@ -1,25 +1,41 @@
- <div class="container_">
-        <form class="form_">
-            <label for="channelName" class="label_">Channel name</label>
-            <input type="text" id="name" name="channelName" class="input_" required>
+<div class="container_">
+  <form
+    class="form_"
+    action="/auth/register"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <label for="channelName" class="label_">Channel name</label>
+    <input type="text" id="name" name="channelName" class="input_" required />
 
+    <label for="handel" class="label_">Handel</label>
+    <input type="text" id="handle" name="handel" class="input_" required />
 
-            <label for="handel" class="label_">Handel</label>
-            <input type="text" id="handle" name="handel" class="input_" required>
+    <label for="email" class="label_">Email</label>
+    <input type="email" id="email" name="email" class="input_" required />
 
-            <label for="email" class="label_">Email</label>
-            <input type="email" id="email" name="email" class="input_" required>
+    <label for="password" class="label_">Password</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      class="input_"
+      required
+    />
 
-            <label for="password" class="label_">Password</label>
-            <input type="password" id="password" name="password" class="input_" required>
+    <label for="confirm-password" class="label_">Confirm Password</label>
+    <input
+      type="password"
+      id="confirmPassword"
+      name="confirmPassword"
+      class="input_"
+      required
+    />
 
-            <label for="confirm-password" class="label_">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" class="input_" required>
+    <label for="channelPicture" class="label_">Channel Picture</label>
+    <input type="file" id="channel-picture" name="channelPicture" required />
 
-            <label for="channelPicture" class="label_">Channel Picture</label>
-            <input type="file" id="channel-picture" name="channelPicture"  required>
-
-            <button type="submit" class="button_">Register</button>
-        </form>
-    </div>
-</body>
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+    <button type="submit" class="button_">Register</button>
+  </form>
+</div>

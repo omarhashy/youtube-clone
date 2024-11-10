@@ -1,28 +1,68 @@
-const PORT = process.env.PORT;
-
-const express = require("express");
-const path = require("path");
-const sequelize = require("./config/database");
 require("./models/association");
 
+const PORT = process.env.PORT;
+const SECRET_KEY = process.env.SECRET_KEY;
+
+const express = require("express");
+const flash = require("connect-flash");
+const csrf = require("tiny-csrf");
+const path = require("path");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const multerSingle = require("./middlewares/multerSingle");
+
+const sequelize = require("./config/database");
+const locals = require("./middlewares/locals");
 //controllers
 const errorController = require("./controllers/webApp/errorController");
+
 //routes
 const feedRoutes = require("./routes/webApp/feedRoutes");
 const authRoutes = require("./routes/webApp/authRoutes");
-const { error } = require("console");
+
+const app = express();
 
 //middlewares
-const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+//sessions configuration
+const sessionStore = new SequelizeStore({
+  db: sequelize,
+});
+
+app.use(
+  session({
+    secret: SECRET_KEY,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 7 * 45 * 60 * 60 * 1000,
+    },
+  })
+);
+
+sessionStore.sync();
+
+app.use(multerSingle);
+//API
+
 //youtube webApp routes
+app.use(express.urlencoded({ extended: false }));
+
+app.use(cookieParser(SECRET_KEY));
+app.use(csrf(SECRET_KEY));
+
+app.use(flash());
+app.use(locals);
 app.use("/auth", authRoutes);
 app.use(feedRoutes);
+
 //404 error
 app.use(errorController.get404);
 //500 error
