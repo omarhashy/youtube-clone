@@ -7,10 +7,20 @@ const router = express.Router();
 router.get("/register", authController.getRegister);
 router.get("/login", authController.getLogin);
 router.get("/verify/:token", authController.verify);
-
-// router.get("/reset-password", authController.getResetPassword);
-// router.get("/reset-password/:token",authController.getResetPasswordToken);
+router.get("/reset-password/:token", authController.getResetPasswordToken);
+router.get("/reset-password", authController.getResetPassword);
 
 router.post("/register", validators.register, authController.postRegister);
+router.post("/login", validators.login, authController.postLogin);
+router.post(
+  "/reset-password",
+  validators.resetPassword,
+  authController.postResetPassword
+);
+router.post(
+  "/reset-password-token",
+  validators.getResetPasswordToken,
+  authController.postResetPasswordToken
+);
 
 module.exports = router;

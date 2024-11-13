@@ -16,12 +16,12 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg"
   ) {
+      console.log("file input");
     cb(null, true);
   } else {
     cb(null, false);
   }
 };
-
 module.exports = multer({
   storage: fileStorage,
   fileFilter: fileFilter,

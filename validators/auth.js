@@ -1,7 +1,6 @@
 const { query, body } = require("express-validator");
 const Channel = require("../models/channel");
 
-
 module.exports.register = [
   body("channelName")
     .isString()
@@ -57,4 +56,38 @@ module.exports.register = [
       throw new Error("Passwords must match!");
     })
     .trim(),
+];
+
+module.exports.getResetPasswordToken = [
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Please enter a password with at least 8 characters.")
+    .isAlphanumeric()
+    .withMessage("Password must contain only numbers and letters.")
+    .trim(),
+
+  body("confirmPassword")
+    .custom((value, { req }) => {
+      if (value === req.body.password) return true;
+      throw new Error("Passwords must match!");
+    })
+    .trim(),
+];
+module.exports.login = [
+  body("email")
+    .notEmpty()
+    .withMessage("email can not be empty")
+    .isEmail()
+    .withMessage("invalid email")
+    .normalizeEmail(),
+  body("password").notEmpty().withMessage("password can not be empty").trim(),
+];
+
+module.exports.resetPassword = [
+  body("email")
+    .notEmpty()
+    .withMessage("email can not be empty")
+    .isEmail()
+    .withMessage("invalid email")
+    .normalizeEmail(),
 ];
