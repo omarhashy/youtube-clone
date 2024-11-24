@@ -14,6 +14,7 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const sequelize = require("./config/database");
 const locals = require("./middlewares/locals");
 const multerSingle = require("./middlewares/multerSingle");
+const authenticationMiddlewares = require("./middlewares/authentication");
 
 //controllers
 const errorController = require("./controllers/webApp/errorController");
@@ -32,11 +33,6 @@ app.set("views", "views");
 app.use(multerSingle);
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
-//API
-app.use("/api", express.json());
-app.use("/api/auth", authRoutesApi);
-app.use("/api", apiErrorController.get404);
-app.use("/api", apiErrorController.getError);
 
 app.use(express.urlencoded({ extended: true }));
 //sessions configuration
@@ -58,12 +54,19 @@ app.use(
 
 sessionStore.sync();
 
-//youtube webApp routes
-app.use(express.urlencoded({ extended: false }));
+app.use(authenticationMiddlewares.authenticate);
 
+
+//API
+app.use("/api", express.json());
+app.use("/api/auth", authRoutesApi);
+app.use("/api", apiErrorController.get404);
+app.use("/api", apiErrorController.getError);
+
+//webApp
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(SECRET_KEY));
 app.use(csrf(SECRET_KEY));
-
 app.use(flash());
 app.use(locals);
 app.use("/auth", authRoutes);

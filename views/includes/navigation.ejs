@@ -1,33 +1,49 @@
 <nav>
   <div class="navbar">
     <div class="nav-item-left">
+    
       <div class="<%=( pageTile === "Home" )? 'nav-item-active' : 'nav-item' %>">
-        <a href="\">Home</a>
+        <a href="/">Home</a>
       </div>
-      <div class="<%=( pageTile === "Subscriptions" )? 'nav-item-active' : 'nav-item' %>">
-        <a href="\feed\subscriptions">Subscriptions</a>
-      </div>
-
-      <div class="<%=( pageTile === "Liked" )? 'nav-item-active' : 'nav-item' %>">
-        <a href="\feed\liked">Liked</a>
-      </div>
+      <% if(isLoggedIn) {%>
+        <div class="<%=( pageTile === "Subscriptions" )? 'nav-item-active' : 'nav-item' %>">
+          <a href="/feed/subscriptions">Subscriptions</a>
+        </div>
+        
+        <div class="<%=( pageTile === "Liked" )? 'nav-item-active' : 'nav-item' %>">
+          <a href="/feed/liked">Liked</a>
+        </div>
+        <% } %>
+      
     </div>
-
     <div class="nav-search">
       <form action="" class="nav-item-search">
         <input type="text" placeholder="Search" id="nav-item-search-input" />
         <input type="submit" value="search" id="nav-item-search-submit" />
       </form>
     </div>
-
-    <div class="nav-item-right">
-      <div class="nav-item">
-        <a href="">log out</a>
-      </div>
-
-      <div class="nav-item">
-        <a href="\channel\ljsalh">My channel</a>
-      </div>
+      
+      <div class="nav-item-right">
+      <% if(isLoggedIn) {%>
+        <div class="nav-item">
+          <!-- <a href="">log out</a> -->
+            <form action="/auth/logout" method="POST">
+              <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+              <input type="submit" value="logout">
+           </form>
+        </div>
+        
+        <div class="<%=( channelHandle === pageTile )? 'nav-item-active' : 'nav-item' %>">
+          <a href="/channel/<%=channelHandle%>"><%=channelHandle%></a>
+        </div>
+      <% }else {%>
+        <div class="<%=( pageTile === "Login" )? 'nav-item-active' : 'nav-item' %>">
+          <a href="/auth/login">login</a>
+        </div>
+        
+        <div class="<%=( pageTile === "Register" )? 'nav-item-active' : 'nav-item' %>">
+          <a href="/auth/register">register</a>
+        </div>
+      <% }%>
     </div>
-  </div>
 </nav>

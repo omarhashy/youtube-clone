@@ -10,7 +10,7 @@ module.exports.register = [
     .withMessage("Channel name cannot have more than 50 characters.")
     .trim(),
 
-  body("handel")
+  body("handle")
     .isAlphanumeric()
     .withMessage("Channel handle cannot contain spaces")
     .isLength({ min: 3 })
@@ -18,10 +18,10 @@ module.exports.register = [
     .isLength({ max: 20 })
     .withMessage("Channel handle cannot have more than 20 characters.")
     .custom((value, { req }) => {
-      return Channel.findOne({ handel: value }).then((userDoc) => {
+      return Channel.findOne({ handle: value }).then((userDoc) => {
         if (userDoc) {
           return Promise.reject(
-            "Handel exists already, please pick a different one."
+            "Handle exists already, please pick a different one."
           );
         }
       });

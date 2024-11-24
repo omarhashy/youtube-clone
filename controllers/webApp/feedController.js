@@ -3,7 +3,7 @@ exports.getIndex = (req, res, next) => {
     pageTile: "Home",
     PageHeader: "Popular videos",
   };
-  console.log(req?.session?.channelHandel);
+  // console.log(req.isLoggedIn);
   res.status(200).render("feed/home.ejs", context);
 };
 

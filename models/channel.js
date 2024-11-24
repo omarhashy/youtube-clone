@@ -8,7 +8,7 @@ const Channel = sequelize.define("channel", {
     allowNull: false,
     primaryKey: true,
   },
-  handel: {
+  handle: {
     type: DataTypes.STRING(20),
     unique: true,
     allowNull: false,

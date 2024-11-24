@@ -28,7 +28,7 @@ exports.postRegister = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     const channel = await Channel.create(
       {
-        handel: req.body.handel,
+        handle: req.body.handle,
         email: req.body.email,
         password: hashedPassword,
         name: req.body.channelName,
@@ -104,7 +104,7 @@ exports.postLogin = async (req, res, next) => {
     } else if (doMatch) {
       const jwtToken = jwt.sign(
         {
-          channelHandel: channel.handel,
+          channelHandle: channel.handle,
           channelId: channel.id,
         },
         SECRET_KEY,
@@ -113,7 +113,7 @@ exports.postLogin = async (req, res, next) => {
 
       res.status(200).json({
         jwtToken: jwtToken,
-        channelHandel: channel.handel,
+        channelHandle: channel.handle,
       });
       return;
     }

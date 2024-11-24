@@ -40,7 +40,7 @@ exports.postRegister = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     const channel = await Channel.create(
       {
-        handel: req.body.handel,
+        handle: req.body.handle,
         email: req.body.email,
         password: hashedPassword,
         name: req.body.channelName,
@@ -124,7 +124,8 @@ exports.postLogin = async (req, res, next) => {
       req.flash("errors", ["please verify your account"]);
     } else if (doMatch) {
       req.session.isLoggedIn = true;
-      req.session.channelHandel = channel.handel;
+      req.session.channelHandle = channel.handle;
+      req.session.channelId = channel.id;
       await req.session.save((error) => {
         if (error) throw error;
       });
@@ -269,7 +270,7 @@ exports.postResetPasswordToken = async (req, res, next) => {
     await chanel.save();
     await token.destroy();
     req.flash("successes", ["password changed successfully"]);
-    res.redirect('/auth/login')
+    res.redirect("/auth/login");
   } catch (error) {
     next(error);
   }
@@ -301,4 +302,11 @@ exports.verify = async (req, res, next) => {
     await transaction.rollback();
     next(error);
   }
+};
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) throw err;
+    res.redirect("/");
+  });
 };

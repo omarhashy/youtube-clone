@@ -22,5 +22,6 @@ router.post(
   validators.getResetPasswordToken,
   authController.postResetPasswordToken
 );
+router.post("/logout", authController.postLogout);
 
 module.exports = router;
