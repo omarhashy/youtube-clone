@@ -1,5 +1,4 @@
 module.exports.get404 = (req, res, next) => {
-  // console.log(req.isLoggedIn);
   res.status(404).json({ error: "Resource not found" });
 };
 

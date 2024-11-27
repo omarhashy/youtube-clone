@@ -4,14 +4,19 @@ exports.get404 = (req, res, next) => {
 };
 
 exports.get500 = (error, req, res, next) => {
-  console.error(error);
+  if (error.message.includes("CSRF")) {
+    res.status(403).send("<h1>invalid csrf token</h1>");
+    return;
+  }
+
   if (error.NLoggedIn) {
-    res.redirect(401, "/auth/login");
+    req.flash("errors", ["unauthorized access!"]);
+    res.redirect("/auth/login");
     return;
   }
 
   if (error.LoggedIn) {
-    res.redirect(401, "/");
+    res.redirect("/");
     return;
   }
   const context = { errorMessage: "server-side error", pageTile: "error 500" };

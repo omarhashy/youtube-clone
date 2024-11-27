@@ -41,10 +41,10 @@ module.exports.requireLogin = (req, res, next) => {
   next();
 };
 module.exports.requireNLogin = (req, res, next) => {
-  if (!req.isLoggedIn) {
-    const err = new Error("User is logged in");
+  if (req.isLoggedIn) {
+    const err = new Error("User is already logged in");
     err.status = 401;
-    err.NLoggedIn = true;
+    err.LoggedIn = true;
     throw err;
   }
   next();

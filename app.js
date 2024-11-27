@@ -34,7 +34,6 @@ app.use(multerSingle);
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-app.use(express.urlencoded({ extended: true }));
 //sessions configuration
 const sessionStore = new SequelizeStore({
   db: sequelize,
@@ -56,7 +55,6 @@ sessionStore.sync();
 
 app.use(authenticationMiddlewares.authenticate);
 
-
 //API
 app.use("/api", express.json());
 app.use("/api/auth", authRoutesApi);
@@ -64,11 +62,12 @@ app.use("/api", apiErrorController.get404);
 app.use("/api", apiErrorController.getError);
 
 //webApp
+app.use(locals.authLocals);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(SECRET_KEY));
 app.use(csrf(SECRET_KEY));
+app.use(locals.csrfTokenLocals);
 app.use(flash());
-app.use(locals);
 app.use("/auth", authRoutes);
 app.use(feedRoutes);
 
