@@ -1,5 +1,3 @@
-require("./models/association");
-
 const PORT = process.env.PORT;
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -11,9 +9,9 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
-const sequelize = require("./config/database");
+const sequelize = require("./models/association");
 const locals = require("./middlewares/locals");
-const multerSingle = require("./middlewares/multerSingle");
+const multer = require("./middlewares/multer");
 const authenticationMiddlewares = require("./middlewares/authentication");
 
 //controllers
@@ -21,16 +19,19 @@ const errorController = require("./controllers/webApp/errorController");
 const apiErrorController = require("./controllers/API/errorController");
 
 //routes
-const feedRoutes = require("./routes/webApp/feedRoutes");
 const authRoutesApi = require("./routes/API/authRoutesApi");
 const authRoutes = require("./routes/webApp/authRoutes");
+const feedRoutes = require("./routes/webApp/feedRoutes");
+const creatorRoutes = require("./routes/webApp/creatorRoutes");
 
 const app = express();
 
 //middlewares
 app.set("view engine", "ejs");
 app.set("views", "views");
-app.use(multerSingle);
+app.use("/api/auth", multer.single);
+app.use("/auth", multer.single);
+
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -69,6 +70,8 @@ app.use(csrf(SECRET_KEY));
 app.use(locals.csrfTokenLocals);
 app.use(flash());
 app.use("/auth", authRoutes);
+app.use("/creator", creatorRoutes);
+app.use("/creator", creatorRoutes);
 app.use(feedRoutes);
 
 //404 error
@@ -76,16 +79,18 @@ app.use(errorController.get404);
 //500 error
 app.use(errorController.get500);
 
-sequelize
-  .authenticate()
-  .then(() => {
+(async () => {
+  try {
+    await sequelize.authenticate();
     console.log(
       "Connection to the database has been established successfully."
     );
+    await sequelize.sync({ force: true });
+    // await sequelize.sync();
     app.listen(PORT, () => {
       console.log("Connected to server");
     });
-  })
-  .catch((error) => {
-    console.error("Unable to connect to the database:", error);
-  });
+  } catch (error) {
+    console.error(error);
+  }
+})();

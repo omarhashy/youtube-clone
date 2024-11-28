@@ -26,7 +26,7 @@ const Channel = sequelize.define("channel", {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
-  channelPicturePath: {
+  channelPictureFile: {
     type: DataTypes.STRING,
     allowNull: false,
   },

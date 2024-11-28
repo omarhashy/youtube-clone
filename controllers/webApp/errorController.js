@@ -4,6 +4,8 @@ exports.get404 = (req, res, next) => {
 };
 
 exports.get500 = (error, req, res, next) => {
+  console.error(error);
+  
   if (error.message.includes("CSRF")) {
     res.status(403).send("<h1>invalid csrf token</h1>");
     return;

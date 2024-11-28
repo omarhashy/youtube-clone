@@ -24,6 +24,7 @@ exports.getRegister = (req, res, next) => {
 };
 
 exports.postRegister = async (req, res, next) => {
+  console.log(req.file)
   const transaction = await sequelize.transaction();
 
   try {
@@ -44,7 +45,7 @@ exports.postRegister = async (req, res, next) => {
         email: req.body.email,
         password: hashedPassword,
         name: req.body.channelName,
-        channelPicturePath: req.file.path,
+        channelPictureFile: req.file.filename,
       },
       {
         transaction,
