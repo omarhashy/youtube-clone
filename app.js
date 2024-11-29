@@ -85,8 +85,8 @@ app.use(errorController.get500);
     console.log(
       "Connection to the database has been established successfully."
     );
-    await sequelize.sync({ force: true });
-    // await sequelize.sync();
+    // await sequelize.sync({ force: true });
+    await sequelize.sync();
     app.listen(PORT, () => {
       console.log("Connected to server");
     });

@@ -1,4 +1,4 @@
-const { query, body } = require("express-validator");
+const {  body } = require("express-validator");
 const Channel = require("../models/channel");
 
 module.exports.register = [

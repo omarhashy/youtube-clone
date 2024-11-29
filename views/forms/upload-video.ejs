@@ -1,0 +1,26 @@
+<div class="container_">
+  <form class="form_" action="<%=action%>" method="post" enctype="multipart/form-data">
+    <label for="title" class="label_">Title</label>
+    <input type="text" id="title" name="title" class="input_" required value="<%=title%>" />
+
+    <label for="description" class="label_">Description</label>
+    <textarea
+      style="resize: vertical;"
+      class="input_"
+      id="message"
+      name="description"
+      rows="5"
+      cols="40"
+    ><%=description%></textarea>
+    <br />
+
+    <label for="thumbnail" class="label_">Thumbnail</label>
+    <input type="file" id="thumbnail" name="thumbnail" required />
+    <br />
+
+    <label for="video" class="label_">Video</label>
+    <input type="file" id="channel-picture" name="video" required />
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+    <button type="submit" class="button_">Upload</button>
+  </form>
+</div>

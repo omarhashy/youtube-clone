@@ -1,7 +1,7 @@
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
-const fileStorageSingle = multer.diskStorage({
+const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./uploads");
   },
@@ -23,6 +23,7 @@ const fileFilterSingle = (req, file, cb) => {
   }
 };
 module.exports.single = multer({
-  storage: fileStorageSingle,
+  storage: fileStorage,
   fileFilter: fileFilterSingle,
 }).single("channelPicture");
+

@@ -26,7 +26,6 @@ exports.getRegister = (req, res, next) => {
 exports.postRegister = async (req, res, next) => {
   console.log(req.file)
   const transaction = await sequelize.transaction();
-
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
