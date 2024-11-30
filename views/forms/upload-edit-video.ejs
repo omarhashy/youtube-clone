@@ -1,0 +1,43 @@
+<div class="container_">
+  <form
+    class="form_"
+    action="<%=action%>"
+    method="post"
+    enctype="<%= (action == "/creator/upload-video") ? "multipart/form-data" : "application/x-www-form-urlencoded" %>"
+  >
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+    
+    <label for="title" class="label_">Title</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      class="input_"
+      required
+      value="<%= titleValue %>"
+    />
+
+    <label for="description" class="label_">Description</label>
+    <textarea
+      style="resize: vertical"
+      class="input_"
+      id="message"
+      name="description"
+      rows="5"
+      cols="40"
+    ><%= descriptionValue %></textarea>
+    <br />
+    <% if(action == "/creator/upload-video") {%>
+
+    <label for="thumbnail" class="label_">Thumbnail</label>
+    <input type="file" id="thumbnail" name="thumbnail" required />
+    <br />
+
+    <label for="video" class="label_">Video</label>
+    <input type="file" id="channel-picture" name="video" required />
+    <%}%>
+    <button type="submit" class="button_">
+      <%= (action == "/creator/upload-video") ? "Upload" : "Save" %>
+    </button>
+  </form>
+</div>

@@ -29,8 +29,10 @@ const app = express();
 //middlewares
 app.set("view engine", "ejs");
 app.set("views", "views");
+app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth", multer.single);
 app.use("/auth", multer.single);
+app.use("/creator", multer.video);
 
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -63,12 +65,12 @@ app.use("/api", apiErrorController.get404);
 app.use("/api", apiErrorController.getError);
 
 //webApp
-app.use(locals.authLocals);
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(SECRET_KEY));
 app.use(csrf(SECRET_KEY));
 app.use(locals.csrfTokenLocals);
 app.use(flash());
+app.use(locals.flashLocals);
+app.use(locals.authLocals);
 app.use("/auth", authRoutes);
 app.use("/creator", creatorRoutes);
 app.use("/creator", creatorRoutes);

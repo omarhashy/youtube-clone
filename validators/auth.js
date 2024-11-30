@@ -1,5 +1,6 @@
-const {  body } = require("express-validator");
+const { body } = require("express-validator");
 const Channel = require("../models/channel");
+const { where } = require("sequelize");
 
 module.exports.register = [
   body("channelName")
@@ -18,7 +19,7 @@ module.exports.register = [
     .isLength({ max: 20 })
     .withMessage("Channel handle cannot have more than 20 characters.")
     .custom((value, { req }) => {
-      return Channel.findOne({ handle: value }).then((userDoc) => {
+      return Channel.findOne({ where: { handle: value } }).then((userDoc) => {
         if (userDoc) {
           return Promise.reject(
             "Handle exists already, please pick a different one."
@@ -33,8 +34,9 @@ module.exports.register = [
     .normalizeEmail()
     .withMessage("Please enter a valid email.")
     .custom((value, { req }) => {
-      return Channel.findOne({ email: value }).then((userDoc) => {
+      return Channel.findOne({ where: { email: value } }).then((userDoc) => {
         if (userDoc) {
+          console.log(userDoc);
           return Promise.reject(
             "E-mail exists already, please pick a different one."
           );

@@ -12,6 +12,24 @@ router.get(
   creatorController.getUploadVideo
 );
 
-router.post("/upload-video", authenticationMiddlewares.requireLogin);
+router.post(
+  "/upload-video",
+  authenticationMiddlewares.requireLogin,
+  validators.videoValidator,
+  creatorController.postUploadVideo
+);
+
+router.get(
+  "/edit-video/:videoId",
+  authenticationMiddlewares.requireLogin,
+  creatorController.getEditVideo
+);
+
+router.post(
+  "/edit-video/:videoId",
+  authenticationMiddlewares.requireLogin,
+  validators.videoValidator,
+  creatorController.postEditVideo
+);
 
 module.exports = router;

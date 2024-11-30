@@ -9,3 +9,8 @@ module.exports.csrfTokenLocals = (req, res, next) => {
   next();
 };
 
+module.exports.flashLocals = (req, res, next) => {
+  res.locals.errorMessages = JSON.stringify(req.flash("errors") ?? []);
+  res.locals.successMessages = JSON.stringify(req.flash("successes") ?? []);
+  next();
+};

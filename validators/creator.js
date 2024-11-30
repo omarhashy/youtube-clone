@@ -1,12 +1,12 @@
 const { body } = require("express-validator");
 
 const MIN_TITLE_LENGTH = 3;
-const MAX_TITLE_LENGTH = 255;
+const MAX_TITLE_LENGTH = 25;
 
 const MIN_DESCRIPTION_LENGTH = 3;
 const MAX_DESCRIPTION_LENGTH = 255;
 
-module.exports.uploadVideo = [
+module.exports.videoValidator = [
   body("title")
     .isString()
     .isLength({ min: MIN_TITLE_LENGTH, max: MAX_TITLE_LENGTH })

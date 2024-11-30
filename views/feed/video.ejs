@@ -46,12 +46,17 @@
       <hr />
       <div id="comments-box">
         <!-- COMMENT ITEM -->
-        <%- include('../includes/comment-item.ejs') %>
-        <%- include('../includes/comment-item.ejs') %>
-        <%- include('../includes/comment-item.ejs') %>
-        <%- include('../includes/comment-item.ejs') %>
+        <%- include('../includes/comment-item.ejs') %> <%-
+        include('../includes/comment-item.ejs') %> <%-
+        include('../includes/comment-item.ejs') %> <%-
+        include('../includes/comment-item.ejs') %>
         <!-- COMMENT ITEM -->
       </div>
     </div>
+
+    <script src="/public/js/message.js"></script>
+    <script>
+      showMessages(<%-errorMessages%> , <%-successMessages%> );
+    </script>
   </body>
 </html>

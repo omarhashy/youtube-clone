@@ -1,7 +1,7 @@
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const DOMAIN_NAME = process.env.DOMAIN_NAME;
 
-const { validationResult, Result } = require("express-validator");
+const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const sgMail = require("@sendgrid/mail");
@@ -15,16 +15,13 @@ const { where } = require("sequelize");
 
 exports.getRegister = (req, res, next) => {
   context = {
-    errorMessages: JSON.stringify(req.flash("errors") ?? []),
-    successMessages: JSON.stringify(req.flash("successes") ?? []),
     pageTile: "Register",
     pageHeader: "Register",
   };
-  res.render("auth/auth.ejs", context);
+  res.render("/auth/auth.ejs", context);
 };
 
 exports.postRegister = async (req, res, next) => {
-  console.log(req.file)
   const transaction = await sequelize.transaction();
   try {
     const errors = validationResult(req);
@@ -33,6 +30,11 @@ exports.postRegister = async (req, res, next) => {
         "errors",
         errors.array().map((i) => i.msg)
       );
+      res.redirect("/auth/register");
+      return;
+    }
+    if (!req.file) {
+      req.flash("errors", ["thumbnail is required"]);
       res.redirect("/auth/register");
       return;
     }
@@ -84,8 +86,6 @@ exports.postRegister = async (req, res, next) => {
 
 exports.getLogin = (req, res, next) => {
   context = {
-    errorMessages: JSON.stringify(req.flash("errors") ?? []),
-    successMessages: JSON.stringify(req.flash("successes") ?? []),
     pageTile: "Login",
     pageHeader: "Login",
   };
