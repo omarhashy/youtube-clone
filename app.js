@@ -36,6 +36,7 @@ app.use("/creator", multer.video);
 
 //static files
 app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/files", express.static(path.join(__dirname, "uploads")));
 
 //sessions configuration
 const sessionStore = new SequelizeStore({

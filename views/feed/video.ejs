@@ -12,26 +12,17 @@
     <div id="content">
       <div id="video-player-container">
         <div class="channel-info">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS89YbbJQymzIkaQHu-4cMPU-20q8chmtOb_A&s"
-            alt="channel image"
-          />
-          <h2>channel name</h2>
+          <img src="<%=channelPictureURL%>" alt="channel image" />
+          <h2><%=channelName%></h2>
         </div>
 
-        <video controls>
-          <source
-            src="https://rr2---sn-hgn7yn76.googlevideo.com/videoplayback?expire=1730929385&amp;ei=iY4rZ_muJoq1kucP0KWGiAQ&amp;ip=130.180.231.168&amp;id=o-ACYybV7I2GJGOWbO38dcFxeYWU4QYwnAY0D7e33aUG2J&amp;itag=18&amp;source=youtube&amp;requiressl=yes&amp;xpc=EgVo2aDSNQ%3D%3D&amp;bui=AQn3pFQPovc4wElniEHisjgkJVF9SJwRMZFpvDQz_hDiLSDELhcupvGwmDDNeoUHAP7bA0V7Wv3owCAm&amp;vprv=1&amp;mime=video%2Fmp4&amp;rqh=1&amp;cnr=14&amp;ratebypass=yes&amp;dur=201.874&amp;lmt=1708724174714821&amp;fexp=24350590,24350655,24350675,24350705,24350737,24350745,24350768,51312688,51326932&amp;c=MEDIA_CONNECT_FRONTEND&amp;txp=4538434&amp;sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cvprv%2Cmime%2Crqh%2Ccnr%2Cratebypass%2Cdur%2Clmt&amp;sig=AJfQdSswRAIgC-dfjydmtq7CUe1i5YFZNQxOr-3gW4xjPjK77g6ib7oCIAiaMtcwnpl9-FwaWKjiF4NXTFuLgej0f8n5osSdqHW7&amp;rm=sn-gjo-qj5l7l,sn-p5qeek7z&amp;rrc=79,104&amp;req_id=a0b47937e9ffa3ee&amp;rms=rdu,au&amp;redirect_counter=2&amp;cms_redirect=yes&amp;cmsv=e&amp;ipbypass=yes&amp;met=1730907799,&amp;mh=bQ&amp;mip=197.63.170.115&amp;mm=29&amp;mn=sn-hgn7yn76&amp;ms=rdu&amp;mt=1730907259&amp;mv=u&amp;mvi=2&amp;pl=19&amp;lsparams=ipbypass,met,mh,mip,mm,mn,ms,mv,mvi,pl,rms&amp;lsig=ACJ0pHgwRQIhAN2V1zVVKD83Ylijs0gRDZ5KU5d8ewQFITZVuuVj2SY0AiBXgenJQAaGJ7mSpxeo2Qa2F4ye1-HBdbj97RjA4ppgwA%3D%3D"
-            type="video/mp4"
-          />
+        <video controls >
+          <source src="<%=videoUrl%>" type="video/mp4" />
         </video>
         <div id="title-like-box">
-          <h2>
-            video title video title video titlevideo titlevideo titlevideo
-            titlevideo title!
-          </h2>
+          <h2><%=description%></h2>
           <p class="video-description-box-views-date">
-            21/11/2003 12:30PM • 339k views • 339k likes • 230 comments
+            <%=createdAt%> • <%=likesCounter%> likes • <%=commentsCounter%> comments
           </p>
           <button class="like-button">Like</button>
         </div>

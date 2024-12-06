@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
 const Video = require("../../models/video");
-const { video } = require("../../middlewares/multer");
-const flash = require("express-flash");
 module.exports.getUploadVideo = (req, res, next) => {
   context = {
     pageTile: "Upload video",

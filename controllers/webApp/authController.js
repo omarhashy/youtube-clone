@@ -18,7 +18,7 @@ exports.getRegister = (req, res, next) => {
     pageTile: "Register",
     pageHeader: "Register",
   };
-  res.render("/auth/auth.ejs", context);
+  res.render("auth/auth.ejs", context);
 };
 
 exports.postRegister = async (req, res, next) => {
