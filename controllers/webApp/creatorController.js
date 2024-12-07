@@ -90,7 +90,6 @@ module.exports.postEditVideo = async (req, res, next) => {
 
     if (req.channelId != video.channelId) {
       console.log(req.channelId, video.channelId);
-      console.log("hi");
 
       req.flash("errors", ["unauthorize access!"]);
       res.redirect("/");

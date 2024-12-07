@@ -20,6 +20,7 @@ const apiErrorController = require("./controllers/API/errorController");
 
 //routes
 const authRoutesApi = require("./routes/API/authRoutesApi");
+const creatorRoutesApi = require("./routes/API/creatorRoutes");
 const authRoutes = require("./routes/webApp/authRoutes");
 const feedRoutes = require("./routes/webApp/feedRoutes");
 const creatorRoutes = require("./routes/webApp/creatorRoutes");
@@ -31,6 +32,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth", multer.single);
+app.use("/api/creator", multer.video);
 app.use("/auth", multer.single);
 app.use("/creator", multer.video);
 
@@ -62,6 +64,7 @@ app.use(authenticationMiddlewares.authenticate);
 //API
 app.use("/api", express.json());
 app.use("/api/auth", authRoutesApi);
+app.use("/api/creator", creatorRoutesApi);
 app.use("/api", apiErrorController.get404);
 app.use("/api", apiErrorController.getError);
 
