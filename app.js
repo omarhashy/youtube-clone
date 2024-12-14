@@ -61,7 +61,7 @@ sessionStore.sync();
 
 app.use(authenticationMiddlewares.authenticate);
 
-//API
+//API routes
 app.use("/api", express.json());
 app.use("/api/auth", authRoutesApi);
 app.use("/api/creator", creatorRoutesApi);
