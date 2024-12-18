@@ -34,6 +34,10 @@ const Channel = sequelize.define("channel", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  subscribersCounter: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Channel;

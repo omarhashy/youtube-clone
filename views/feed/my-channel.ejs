@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%=pageTile%></title>
+    <link rel="stylesheet" href="/public/css/main.css" />
+    <link rel="stylesheet" href="/public/css/channel.css" />
+  </head>
+  <body>
+    <%- include('../includes/navigation.ejs') %>
+    <div id="content">
+      <div id="channel-info-container">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS89YbbJQymzIkaQHu-4cMPU-20q8chmtOb_A&s"
+          alt="channel image"
+        />
+
+        <div id="channel-info-container-info">
+          <h1>Channel name</h1>
+          <p id="handel-subscribers">@handelname • 2005245 subscribers</p>
+
+          <div id="subscribe-button-container">
+            <button class="subscribe-button">subscribe</button>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      <!-- video start -->
+      <%- include('../includes/video-item.ejs') %>
+      <hr />
+      <!-- video start -->
+
+      <!-- video start -->
+      <%- include('../includes/video-item.ejs') %>
+      <hr />
+      <!-- video start -->
+
+      <!-- video start -->
+      <%- include('../includes/video-item.ejs') %>
+      <hr />
+      <!-- video start -->
+
+      <!-- video start -->
+      <%- include('../includes/video-item.ejs') %>
+      <hr />
+      <!-- video start -->
+    </div>
+    
+    <script src="/public/js/message.js"></script>    
+    <script>
+      showMessages(<%-errorMessages%> , <%-successMessages%> );
+    </script>
+  </body>
+</html>

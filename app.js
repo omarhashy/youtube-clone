@@ -20,7 +20,8 @@ const apiErrorController = require("./controllers/API/errorController");
 
 //routes
 const authRoutesApi = require("./routes/API/authRoutesApi");
-const creatorRoutesApi = require("./routes/API/creatorRoutes");
+const creatorRoutesApi = require("./routes/API/creatorRoutesApi");
+const feedRoutesApi = require("./routes/API/feedRoutesApi");
 const authRoutes = require("./routes/webApp/authRoutes");
 const feedRoutes = require("./routes/webApp/feedRoutes");
 const creatorRoutes = require("./routes/webApp/creatorRoutes");
@@ -62,7 +63,7 @@ sessionStore.sync();
 app.use(authenticationMiddlewares.authenticate);
 
 //API routes
-app.use("/api", express.json());
+app.use("/api", feedRoutesApi);
 app.use("/api/auth", authRoutesApi);
 app.use("/api/creator", creatorRoutesApi);
 app.use("/api", apiErrorController.get404);

@@ -7,7 +7,6 @@ exports.getIndex = (req, res, next) => {
     pageTile: "Home",
     PageHeader: "Popular videos",
   };
-  // console.log(req.isLoggedIn);
   res.status(200).render("feed/home.ejs", context);
 };
 
@@ -27,23 +26,77 @@ exports.getLiked = (req, res, next) => {
   res.status(200).render("feed/home.ejs", context);
 };
 
-exports.getChannel = (req, res, next) => {
-  const channelHandel = req.params.channelHandel;
-  context = {
-    pageTile: channelHandel,
-  };
-  res.status(200).render("feed/channel.ejs", context);
+exports.getChannel = async (req, res, next) => {
+  try {
+    const page = req.query.page ?? 1;
+
+    const channelHandel = req.params.channelHandel;
+    const channel = await Channel.findOne({
+      where: {
+        handle: channelHandel,
+      },
+    });
+
+    if (!channel || !channel?.verified) {
+      next();
+      return;
+    }
+
+    const limit = 2;
+    const videos = await Video.findAll({
+      where: { channelId: channel.id },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+
+    context = {
+      pageTile: channelHandel,
+      channelInfo: (() => {
+        const {
+          id,
+          password,
+          email,
+          channelPictureFile,
+          createdAt,
+          updatedAt,
+          verified,
+          ...rest
+        } = channel.dataValues;
+        rest.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
+        return rest;
+      })(),
+      videoArray: videos.map((video) => {
+        const {
+          verified,
+          id,
+          videoFile,
+          updatedAt,
+          channelId,
+          thumbnailFile,
+          ...rest
+        } = video.dataValues;
+        rest.thumbnailUrl = `/files/images/${video.thumbnailFile}`;
+        return rest;
+      }),
+    };
+
+    if (req.channelId == channel.id) {
+      return res.status(200).render("feed/my-channel.ejs", context);
+    }
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getVideo = async (req, res, next) => {
   const videoId = req.params.videoId;
   const video = await Video.findByPk(videoId);
-  const channel = await Channel.findByPk(video.channelId);
   if (!video) {
     next();
     return;
   }
-  
+  const channel = await Channel.findByPk(video.channelId);
   const context = {
     pageTile: video.title,
     title: video.title,
@@ -56,7 +109,7 @@ exports.getVideo = async (req, res, next) => {
     videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
     videoUrl: `/files/videos/${video.videoFile}`,
   };
-  
+
   // return res.json(context);
   res.render("feed/video.ejs", context);
 };
