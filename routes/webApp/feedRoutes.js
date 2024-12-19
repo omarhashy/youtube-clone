@@ -16,5 +16,5 @@ router.get(
 );
 router.get("/channel/:channelHandel", feedController.getChannel);
 router.get("/video/:videoId", feedController.getVideo);
-
+router.get("/search", feedController.getSearch);
 module.exports = router;

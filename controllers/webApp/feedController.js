@@ -1,7 +1,8 @@
 const Video = require("../../models/video");
 const Channel = require("../../models/channel");
 const { format } = require("date-fns");
-const { where } = require("sequelize");
+const { Op } = require("sequelize");
+const videosFilter = require("../../utilities/videosFilter");
 
 exports.getIndex = (req, res, next) => {
   context = {
@@ -87,14 +88,7 @@ exports.getChannel = async (req, res, next) => {
         rest.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
         return rest;
       })(),
-      videoArray: videos.map((video) => {
-        const { id, videoFile, updatedAt, channelId, thumbnailFile, ...rest } =
-          video.dataValues;
-        rest.thumbnailUrl = `/files/images/${video.thumbnailFile}`;
-        rest.createdAt = format(rest.createdAt, "dd/MM/yyyy hh:mma");
-        rest.videoUrl = `/video/${video.id}`;
-        return rest;
-      }),
+      videoArray: videos.map(videosFilter),
     };
     context.myChannel = req.channelId == channel.id;
     return res.status(200).render("feed/channel.ejs", context);
@@ -104,26 +98,67 @@ exports.getChannel = async (req, res, next) => {
 };
 
 exports.getVideo = async (req, res, next) => {
-  const videoId = req.params.videoId;
-  const video = await Video.findByPk(videoId);
-  if (!video) {
-    next();
-    return;
-  }
-  const channel = await Channel.findByPk(video.channelId);
-  const context = {
-    pageTile: video.title,
-    title: video.title,
-    description: video.description,
-    likesCounter: video.likesCounter,
-    commentsCounter: video.commentsCounter,
-    createdAt: format(video.createdAt, "dd/MM/yyyy hh:mma"),
-    channelName: channel.name,
-    channelPictureURL: `/files/images/${channel.channelPictureFile}`,
-    channelUrl: `/channel/${channel.handle}`,
-    videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
-    videoUrl: `/files/videos/${video.videoFile}`,
-  };
+  try {
+    const videoId = req.params.videoId;
+    const video = await Video.findByPk(videoId);
+    if (!video) {
+      next();
+      return;
+    }
+    const channel = await Channel.findByPk(video.channelId);
+    const context = {
+      pageTile: video.title,
+      title: video.title,
+      description: video.description,
+      likesCounter: video.likesCounter,
+      commentsCounter: video.commentsCounter,
+      createdAt: format(video.createdAt, "dd/MM/yyyy hh:mma"),
+      channelName: channel.name,
+      channelPictureURL: `/files/images/${channel.channelPictureFile}`,
+      channelUrl: `/channel/${channel.handle}`,
+      videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
+      videoUrl: `/files/videos/${video.videoFile}`,
+    };
 
-  res.render("feed/video.ejs", context);
+    res.render("feed/video.ejs", context);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getSearch = async (req, res, next) => {
+  try {
+    const query = req.query.query;
+    const page = +req.query.page || 1;
+
+    if (!query) {
+      return next();
+    }
+    const limit = 1;
+
+    const videos = await Video.findAll({
+      where: {
+        [Op.or]: {
+          title: {
+            [Op.like]: `%${query}%`,
+          },
+          description: {
+            [Op.like]: `%${query}%`,
+          },
+        },
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+    const context = {
+      query: query,
+      videoArray: videos.map(videosFilter),
+      page: page,
+    };
+
+    return res.status(200).json(context);
+  } catch (err) {
+    next(err);
+  }
 };
