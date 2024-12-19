@@ -1,6 +1,7 @@
 const Video = require("../../models/video");
 const Channel = require("../../models/channel");
 const { format } = require("date-fns");
+const { where } = require("sequelize");
 
 exports.getIndex = (req, res, next) => {
   context = {
@@ -28,7 +29,7 @@ exports.getLiked = (req, res, next) => {
 
 exports.getChannel = async (req, res, next) => {
   try {
-    const page = req.query.page ?? 1;
+    const page = +req.query.page ?? 1;
 
     const channelHandel = req.params.channelHandel;
     const channel = await Channel.findOne({
@@ -42,7 +43,7 @@ exports.getChannel = async (req, res, next) => {
       return;
     }
 
-    const limit = 2;
+    const limit = 1;
     const videos = await Video.findAll({
       where: { channelId: channel.id },
       limit: limit,
@@ -50,7 +51,27 @@ exports.getChannel = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
+    if (!videos.length) {
+      next();
+      return;
+    }
+    const rows = await Video.count({
+      where: {
+        channelId: channel.id,
+      },
+    });
+    let nextPage;
+    let previousPage;
+    if (limit * page < rows) {
+      nextPage = page + 1;
+    }
+    if (page > 1) {
+      previousPage = page - 1;
+    }
     context = {
+      currentPage: page,
+      previousPage: previousPage,
+      nextPage: nextPage,
       pageTile: channelHandel,
       channelInfo: (() => {
         const {
@@ -67,23 +88,16 @@ exports.getChannel = async (req, res, next) => {
         return rest;
       })(),
       videoArray: videos.map((video) => {
-        const {
-          verified,
-          id,
-          videoFile,
-          updatedAt,
-          channelId,
-          thumbnailFile,
-          ...rest
-        } = video.dataValues;
+        const { id, videoFile, updatedAt, channelId, thumbnailFile, ...rest } =
+          video.dataValues;
         rest.thumbnailUrl = `/files/images/${video.thumbnailFile}`;
+        rest.createdAt = format(rest.createdAt, "dd/MM/yyyy hh:mma");
+        rest.videoUrl = `/video/${video.id}`;
         return rest;
       }),
     };
-
-    if (req.channelId == channel.id) {
-      return res.status(200).render("feed/my-channel.ejs", context);
-    }
+    context.myChannel = req.channelId == channel.id;
+    return res.status(200).render("feed/channel.ejs", context);
   } catch (err) {
     next(err);
   }
@@ -106,10 +120,10 @@ exports.getVideo = async (req, res, next) => {
     createdAt: format(video.createdAt, "dd/MM/yyyy hh:mma"),
     channelName: channel.name,
     channelPictureURL: `/files/images/${channel.channelPictureFile}`,
+    channelUrl: `/channel/${channel.handle}`,
     videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
     videoUrl: `/files/videos/${video.videoFile}`,
   };
 
-  // return res.json(context);
   res.render("feed/video.ejs", context);
 };

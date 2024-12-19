@@ -11,44 +11,51 @@
     <%- include('../includes/navigation.ejs') %>
     <div id="content">
       <div id="channel-info-container">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS89YbbJQymzIkaQHu-4cMPU-20q8chmtOb_A&s"
-          alt="channel image"
-        />
+        <img src="<%= channelInfo.channelPictureUrl %>" alt="channel image" />
 
         <div id="channel-info-container-info">
-          <h1>Channel name</h1>
-          <p id="handel-subscribers">@handelname • 2005245 subscribers</p>
+          <h1><%=channelInfo.name%></h1>
+          <p id="handel-subscribers">
+            @<%=channelInfo.handle%> • <%=channelInfo.subscribersCounter%>
+            subscribers
+          </p>
 
           <div id="subscribe-button-container">
+            <%if(!myChannel) {%>
             <button class="subscribe-button">subscribe</button>
+            <%}else{%>
+            <a
+              style="margin-top: 1rem; color: black"
+              href="/creator/upload-video"
+            >
+              upload a new video
+            </a>
+            <%}%>
           </div>
         </div>
       </div>
       <hr />
 
-      <!-- video start -->
-      <%- include('../includes/video-item.ejs') %>
-      <hr />
-      <!-- video start -->
+      <% if(videoArray.length == 0){ %>
+      <h3>No videos available!</h3>
+      <% } %> <% videoArray.forEach(video => {%>
 
       <!-- video start -->
-      <%- include('../includes/video-item.ejs') %>
+      <%- include('../includes/video-item.ejs', {video}) %>
       <hr />
-      <!-- video start -->
-
-      <!-- video start -->
-      <%- include('../includes/video-item.ejs') %>
-      <hr />
-      <!-- video start -->
-
-      <!-- video start -->
-      <%- include('../includes/video-item.ejs') %>
-      <hr />
-      <!-- video start -->
+      <!-- video end -->
+      <% }); %>
     </div>
-    
-    <script src="/public/js/message.js"></script>    
+
+
+    <div style="margin-left: auto; margin-right: auto; width: max-content">
+      <% if(previousPage) {%>
+      <a style="margin-right: 2rem" href="?page=<%=previousPage%>">previous page</a>
+      <% } %> <% if(nextPage) {%>
+      <a href="?page=<%=nextPage%>">next page</a>
+      <% } %>
+    </div>
+    <script src="/public/js/message.js"></script>
     <script>
       showMessages(<%-errorMessages%> , <%-successMessages%> );
     </script>

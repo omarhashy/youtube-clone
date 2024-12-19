@@ -1,31 +1,24 @@
 <!-- video start -->
 <div class="video-container">
   <div class="channel-info">
-    <img
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS89YbbJQymzIkaQHu-4cMPU-20q8chmtOb_A&s"
-      alt="channel image"
-    />
-    <h2>channel name</h2>
+    <img src="<%= channelInfo.channelPictureUrl %>" alt="channel image" />
+    <h2><%=channelInfo.name%></h2>
   </div>
   <div class="video-info">
-    <img
-      src="https://i.ytimg.com/vi/Nii_fBGb0_c/maxresdefault.jpg"
-      alt="thumbnail"
-    />
-    <div class="video-description-box">
-      <p class="video-description-box-title">
-        video title video title video title video title video title !
-      </p>
-
+    <a href="<%= video.videoUrl %>">
+      <img src="<%=video.thumbnailUrl%>" alt="thumbnail" />
+    </a>
+    <div  class="video-description-box">
+      <a style="color: black;  text-decoration: none;" href="<%= video.videoUrl %>">
+        <p class="video-description-box-title"><%=video.title %></p>
+      </a>
       <p class="video-description-box-views-date">
-        21/11/2003 12:30PM • 339k views • 339k likes • 230 comments
+        <%= video.createdAt %> • <%=video.likesCounter%> likes • <%=video.commentsCounter%> comments
       </p>
-      <p class="video-description-box-description">
-        description description description description description description
-        description description description description description description
-        description description description description description !
-      </p>
+      <a style="color: black;  text-decoration: none;" href="<%= video.videoUrl %>">
+        <p class="video-description-box-description"><%= video.description %></p>
+      </a>
     </div>
   </div>
 </div>
-<!-- video start -->
+<!-- video end -->

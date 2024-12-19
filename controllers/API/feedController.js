@@ -17,7 +17,7 @@ exports.getChannel = async (req, res, next) => {
       return;
     }
 
-    const limit = 2;
+    const limit = 10;
     const videos = await Video.findAll({
       where: { channelId: channel.id },
       limit: limit,
@@ -30,12 +30,12 @@ exports.getChannel = async (req, res, next) => {
       channelInfo: (() => {
         const {
           id,
+          verified,
           password,
           email,
           channelPictureFile,
           createdAt,
           updatedAt,
-          verified,
           ...rest
         } = channel.dataValues;
         rest.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
@@ -51,6 +51,7 @@ exports.getChannel = async (req, res, next) => {
           thumbnailFile,
           ...rest
         } = video.dataValues;
+        rest.videoUrl = `/video/${video.id}`;
         rest.thumbnailUrl = `/files/images/${video.thumbnailFile}`;
         return rest;
       }),
