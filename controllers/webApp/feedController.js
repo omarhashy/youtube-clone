@@ -29,7 +29,7 @@ exports.getLiked = (req, res, next) => {
 
 exports.getChannel = async (req, res, next) => {
   try {
-    const page = +req.query.page ?? 1;
+    const page = +req.query.page || 1;
 
     const channelHandel = req.params.channelHandel;
     const channel = await Channel.findOne({
