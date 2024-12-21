@@ -31,6 +31,8 @@ const app = express();
 //middlewares
 app.set("view engine", "ejs");
 app.set("views", "views");
+
+app.use("/api", express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth", multer.single);
 app.use("/api/creator", multer.video);

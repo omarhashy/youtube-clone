@@ -108,12 +108,29 @@ module.exports.postEditVideo = async (req, res, next) => {
     video.title = req.body.title;
     video.description = req.body.description;
 
-    video.save();
+    await video.save();
     req.flash("successes", ["Video updated successfully"]);
-    return res.redirect("/");
-    // return res.status(200).json([req.params, req.body, video]);
+    return res.redirect(`/channel/${req.channelHandle}`);
   } catch (err) {
     console.error(err);
+    next(err);
+  }
+};
+
+module.exports.postDeleteVideo = async (req, res, next) => {
+  try {
+    const videoId = req.params.videoId;
+    const video = await Video.findByPk(videoId);
+    if (req.channelId != video.channelId) {
+      const error = new Error("unauthorize access access");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    await video.destroy();
+    req.flash("successes", ["Video deleted successfully"]);
+    return res.redirect(`/channel/${req.channelHandle}`);
+  } catch (err) {
     next(err);
   }
 };

@@ -18,7 +18,7 @@ exports.getChannel = async (req, res, next) => {
       next();
       return;
     }
-
+    
     const limit = 10;
     const videos = await Video.findAll({
       where: { channelId: channel.id },

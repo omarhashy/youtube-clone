@@ -1,23 +1,46 @@
 <!-- video start -->
 <div class="video-container">
   <div class="channel-info">
-    <img src="<%= (video.channelInfo || channelInfo).channelPictureUrl  %>" alt="channel image" />
+    <img
+      src="<%= (video.channelInfo || channelInfo).channelPictureUrl  %>"
+      alt="channel image"
+    />
     <h2><%=(video.channelInfo || channelInfo).name%></h2>
   </div>
   <div class="video-info">
     <a href="<%= video.videoUrl %>">
       <img src="<%=video.thumbnailUrl%>" alt="thumbnail" />
     </a>
-    <div  class="video-description-box">
-      <a style="color: black;  text-decoration: none;" href="<%= video.videoUrl %>">
+    <div class="video-description-box">
+      <a
+        style="color: black; text-decoration: none"
+        href="<%= video.videoUrl %>"
+      >
         <p class="video-description-box-title"><%=video.title %></p>
       </a>
       <p class="video-description-box-views-date">
-        <%= video.createdAt %> • <%=video.likesCounter%> likes • <%=video.commentsCounter%> comments
+        <%= video.createdAt %> • <%=video.likesCounter%> likes •
+        <%=video.commentsCounter%> comments
       </p>
-      <a style="color: black;  text-decoration: none;" href="<%= video.videoUrl %>">
-        <p class="video-description-box-description"><%= video.description %></p>
+      <a
+        style="color: black; text-decoration: none"
+        href="<%= video.videoUrl %>"
+      >
+        <p class="video-description-box-description">
+          <%= video.description %>
+        </p>
       </a>
+      <%if(myChannel) {%>
+      <div>
+        <a style="color: black" href="/creator/edit-video/<%=video.id%>"
+          >edit</a
+        >
+        <form style="width: min-content; margin-bottom: 0;" action="\creator\delete-video\<%=video.id%>" method="post">
+          <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+          <input style="margin-top: 1rem;" type="submit" value="delete" />
+        </form>
+      </div>
+      <%}%>
     </div>
   </div>
 </div>

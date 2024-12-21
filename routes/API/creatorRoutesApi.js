@@ -20,4 +20,10 @@ router.patch(
   creatorController.patchEditVideo
 );
 
+router.delete(
+  "/delete-video/:videoId",
+  authenticationMiddlewares.requireLogin,
+  creatorController.deleteDeleteVideo
+);
+
 module.exports = router;

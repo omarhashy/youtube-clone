@@ -2,7 +2,7 @@ const { format } = require("date-fns");
 const Channel = require("../models/channel");
 
 module.exports = async (video, addChannelInfo = false) => {
-  const { id, videoFile, updatedAt, channelId, thumbnailFile, ...rest } =
+  const { videoFile, updatedAt, channelId, thumbnailFile, ...rest } =
     video.dataValues;
   rest.thumbnailUrl = `/files/images/${video.thumbnailFile}`;
   rest.createdAt = format(rest.createdAt, "dd/MM/yyyy hh:mma");

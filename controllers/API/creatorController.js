@@ -42,7 +42,6 @@ module.exports.patchEditVideo = async (req, res, next) => {
   try {
     const video = await Video.findByPk(req.body.videoId);
 
-      
     if (!video) {
       const error = new Error("No video found");
       error.statusCode = 403;
@@ -66,11 +65,28 @@ module.exports.patchEditVideo = async (req, res, next) => {
     video.title = req.body.title;
     video.description = req.body.description;
 
-    video.save();
+    await video.save();
 
     return res.status(200).json({ message: "Video updated successfully" });
   } catch (err) {
     console.error(err);
+    next(err);
+  }
+};
+
+module.exports.deleteDeleteVideo = async (req, res, next) => {
+  try {
+    const videoId = req.params.videoId;
+    const video = await Video.findByPk(videoId);
+    if (req.channelId != video.channelId) {
+      const error = new Error("unauthorize access access");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    await video.destroy();
+    return res.json({ message: "Video deleted successfully" });
+  } catch (err) {
     next(err);
   }
 };

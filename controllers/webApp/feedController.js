@@ -45,6 +45,13 @@ exports.getChannel = async (req, res, next) => {
     }
 
     const limit = 10;
+
+    const rows = await Video.count({
+      where: {
+        channelId: channel.id,
+      },
+    });
+
     const videos = await Video.findAll({
       where: { channelId: channel.id },
       limit: limit,
@@ -52,15 +59,6 @@ exports.getChannel = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
-    if (!videos.length) {
-      next();
-      return;
-    }
-    const rows = await Video.count({
-      where: {
-        channelId: channel.id,
-      },
-    });
     let nextPage;
     let previousPage;
     if (limit * page < rows) {

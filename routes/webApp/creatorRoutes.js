@@ -32,4 +32,10 @@ router.post(
   creatorController.postEditVideo
 );
 
+router.post(
+  "/delete-video/:videoId",
+  authenticationMiddlewares.requireLogin,
+  creatorController.postDeleteVideo
+);
+
 module.exports = router;
