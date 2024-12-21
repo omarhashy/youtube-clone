@@ -9,7 +9,7 @@ exports.getIndex = (req, res, next) => {
     pageTile: "Home",
     PageHeader: "Popular videos",
   };
-  res.status(200).render("feed/home.ejs", context);
+  res.status(200).render("feed/video-list.ejs", context);
 };
 
 exports.getSubscriptions = (req, res, next) => {
@@ -17,7 +17,7 @@ exports.getSubscriptions = (req, res, next) => {
     pageTile: "Subscriptions",
     PageHeader: "Subscriptions",
   };
-  res.status(200).render("feed/home.ejs", context);
+  res.status(200).render("feed/video-list.ejs", context);
 };
 
 exports.getLiked = (req, res, next) => {
@@ -25,7 +25,7 @@ exports.getLiked = (req, res, next) => {
     pageTile: "Liked",
     PageHeader: "Liked videos",
   };
-  res.status(200).render("feed/home.ejs", context);
+  res.status(200).render("feed/video-list.ejs", context);
 };
 
 exports.getChannel = async (req, res, next) => {
@@ -44,7 +44,7 @@ exports.getChannel = async (req, res, next) => {
       return;
     }
 
-    const limit = 1;
+    const limit = 10;
     const videos = await Video.findAll({
       where: { channelId: channel.id },
       limit: limit,
@@ -88,7 +88,7 @@ exports.getChannel = async (req, res, next) => {
         rest.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
         return rest;
       })(),
-      videoArray: videos.map(videosFilter),
+      videoArray: await Promise.all(videos.map(videosFilter)),
     };
     context.myChannel = req.channelId == channel.id;
     return res.status(200).render("feed/channel.ejs", context);
@@ -106,6 +106,7 @@ exports.getVideo = async (req, res, next) => {
       return;
     }
     const channel = await Channel.findByPk(video.channelId);
+
     const context = {
       pageTile: video.title,
       title: video.title,
@@ -134,7 +135,7 @@ exports.getSearch = async (req, res, next) => {
     if (!query) {
       return next();
     }
-    const limit = 1;
+    const limit = 10;
 
     const videos = await Video.findAll({
       where: {
@@ -151,13 +152,19 @@ exports.getSearch = async (req, res, next) => {
       offset: (page - 1) * limit,
       order: [["createdAt", "DESC"]],
     });
+    //  videoArray: await Promise.all(videos.map(videosFilter))
+
     const context = {
       query: query,
-      videoArray: videos.map(videosFilter),
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
       page: page,
+      pageTile: `Search`,
+      PageHeader: `Search results for "${query}"`,
     };
 
-    return res.status(200).json(context);
+    return res.render("feed/video-list.ejs", context);
   } catch (err) {
     next(err);
   }

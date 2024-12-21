@@ -12,10 +12,15 @@
       <h1><%=PageHeader%></h1>
       <hr />
       
-      <!-- video start -->
-      <!-- <hr /> -->
-      <!-- video end -->
+      <% if(videoArray.length == 0){ %>
+      <h3>No videos available!</h3>
+      <% } %> <% videoArray.forEach(video => {%>
 
+      <!-- video start -->
+      <%- include('../includes/video-item.ejs', {video}) %>
+      <hr />
+      <!-- video end -->
+      <% }); %>
     
     <script src="/public/js/message.js"></script>    
     <script>

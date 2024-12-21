@@ -1,8 +1,8 @@
 <!-- video start -->
 <div class="video-container">
   <div class="channel-info">
-    <img src="<%= channelInfo.channelPictureUrl %>" alt="channel image" />
-    <h2><%=channelInfo.name%></h2>
+    <img src="<%= (video.channelInfo || channelInfo).channelPictureUrl  %>" alt="channel image" />
+    <h2><%=(video.channelInfo || channelInfo).name%></h2>
   </div>
   <div class="video-info">
     <a href="<%= video.videoUrl %>">
