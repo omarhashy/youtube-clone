@@ -1,6 +1,7 @@
 module.exports.authLocals = (req, res, next) => {
   res.locals.isLoggedIn = req.isLoggedIn;
   res.locals.channelHandle = req.channelHandle;
+  res.locals.myChannel = false;
   next();
 };
 

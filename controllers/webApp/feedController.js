@@ -1,8 +1,10 @@
 const Video = require("../../models/video");
 const Channel = require("../../models/channel");
+const Like = require("../../models/like");
 const { format } = require("date-fns");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
+
 
 exports.getIndex = (req, res, next) => {
   context = {
@@ -106,6 +108,7 @@ exports.getVideo = async (req, res, next) => {
     const channel = await Channel.findByPk(video.channelId);
 
     const context = {
+      videoId: video.id,
       pageTile: video.title,
       title: video.title,
       description: video.description,
@@ -117,8 +120,20 @@ exports.getVideo = async (req, res, next) => {
       channelUrl: `/channel/${channel.handle}`,
       videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
       videoUrl: `/files/videos/${video.videoFile}`,
+      isLiked: false,
     };
 
+    if (req.isLoggedIn) {
+      let like = await Like.findOne({
+        where: {
+          channelId: req.channelId,
+          videoId: videoId,
+        },
+      });
+      if (like) {
+        context.isLiked = true;
+      }
+    }
     res.render("feed/video.ejs", context);
   } catch (err) {
     next(err);
@@ -150,7 +165,6 @@ exports.getSearch = async (req, res, next) => {
       offset: (page - 1) * limit,
       order: [["createdAt", "DESC"]],
     });
-    //  videoArray: await Promise.all(videos.map(videosFilter))
 
     const context = {
       query: query,

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/public/css/video.css" />
   </head>
   <body>
+    <script src="/public/js/message.js"></script>
+    <script src="/public/js/apis.js"></script>
     <%- include('../includes/navigation.ejs') %>
     <div id="content">
       <div id="video-player-container">
@@ -15,23 +17,30 @@
           <a href="<%=channelUrl%>">
             <img src="<%=channelPictureURL%>" alt="channel image" />
           </a>
-          <a style="color: black; text-decoration: none;" href="<%=channelUrl%>">
+          <a style="color: black; text-decoration: none" href="<%=channelUrl%>">
             <h2><%=channelName%></h2>
           </a>
         </div>
 
-        <video controls >
+        <video controls>
           <source src="<%=videoUrl%>" type="video/mp4" />
         </video>
         <div id="title-like-box">
           <h2><%=title%></h2>
           <p class="video-description-box-views-date">
-            <%=createdAt%> • <%=likesCounter%> likes • <%=commentsCounter%> comments
+            <%=createdAt%> • <%=likesCounter%> likes • <%=commentsCounter%>
+            comments
           </p>
-          <p>
-            <%=description%>
-          </p>
-          <button class="like-button">Like</button>
+          <p><%=description%></p>
+          <% if(isLoggedIn) {%>
+          <button
+            class="like-button"
+            id="likeButton"
+            onclick="submitLike(<%=videoId%>)"
+          >
+            Like
+          </button>
+          <% } %>
         </div>
         <div class="comment-form">
           <textarea
@@ -52,9 +61,10 @@
       </div>
     </div>
 
-    <script src="/public/js/message.js"></script>
+    <script src="/public/js/utils.js"></script>
     <script>
       showMessages(<%-errorMessages%> , <%-successMessages%> );
+      setLikeButton(<%=isLiked%>);
     </script>
   </body>
 </html>

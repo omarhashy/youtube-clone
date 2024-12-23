@@ -1,5 +1,7 @@
 const Video = require("../../models/video");
 const Channel = require("../../models/channel");
+const sequelize = require("../../config/database");
+const Like = require("../../models/like");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
 
@@ -18,7 +20,7 @@ exports.getChannel = async (req, res, next) => {
       next();
       return;
     }
-    
+
     const limit = 10;
     const videos = await Video.findAll({
       where: { channelId: channel.id },
@@ -74,6 +76,7 @@ exports.getVideo = async (req, res, next) => {
     }
     const channel = await Channel.findByPk(video.channelId);
     const context = {
+      videoId: video.id,
       title: video.title,
       description: video.description,
       likesCounter: video.likesCounter,
@@ -84,7 +87,20 @@ exports.getVideo = async (req, res, next) => {
       channelUrl: `/channel/${channel.handle}`,
       videoThumbnailUrl: `/files/images/${video.thumbnailFile}`,
       videoUrl: `/files/videos/${video.videoFile}`,
+      isLiked: false,
     };
+
+    if (req.isLoggedIn) {
+      let like = await Like.findOne({
+        where: {
+          channelId: req.channelId,
+          videoId: videoId,
+        },
+      });
+      if (like) {
+        context.isLiked = true;
+      }
+    }
 
     return res.status(200).json(context);
   } catch (err) {
@@ -128,6 +144,64 @@ exports.getSearch = async (req, res, next) => {
 
     return res.status(200).json(context);
   } catch (err) {
+    next(err);
+  }
+};
+
+exports.postLike = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const videoId = req.body.videoId;
+    const video = await Video.findByPk(videoId);
+
+    if (!video) {
+      next();
+      return;
+    }
+
+    let like = await Like.findOne({
+      where: {
+        channelId: req.channelId,
+        videoId: videoId,
+      },
+    });
+
+    if (like) {
+      video.likesCounter--;
+      await like.destroy({ transaction: t });
+      await video.save({ transaction: t });
+      await t.commit();
+      return res.status(200).json({
+        likesCounter: video.likesCounter,
+        channelId: req.channelId,
+        videoId: video.id,
+        message: "like removed successfully",
+        isLiked: false,
+      });
+    }
+
+    video.likesCounter++;
+
+    like = Like.create(
+      {
+        videoId: video.id,
+        channelId: req.channelId,
+      },
+      { transaction: t }
+    );
+    const videoP = video.save({ transaction: t });
+
+    await Promise.all([like, videoP]);
+    await t.commit();
+    return res.status(200).json({
+      likesCounter: video.likesCounter,
+      channelId: req.channelId,
+      videoId: video.id,
+      message: "like added successfully",
+      isLiked: true,
+    });
+  } catch (err) {
+    await t.rollback();
     next(err);
   }
 };
