@@ -8,6 +8,12 @@ const router = express.Router();
 router.get("/channel/:channelHandel", feedController.getChannel);
 router.get("/video/:videoId", feedController.getVideo);
 router.get("/search", feedController.getSearch);
+router.get(
+  "/feed/liked",
+  authenticationMiddlewares.requireLogin,
+  feedController.getLikedVideos
+);
+
 router.post(
   "/like",
   authenticationMiddlewares.requireLogin,

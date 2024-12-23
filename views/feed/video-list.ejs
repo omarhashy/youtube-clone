@@ -21,6 +21,15 @@
       <hr />
       <!-- video end -->
       <% }); %>
+
+      
+    <div style="margin-left: auto; margin-right: auto; width: max-content">
+      <% if(previousPage) {%>
+      <a style="margin-right: 2rem" href="?page=<%=previousPage%>">previous page</a>
+      <% } %> <% if(nextPage) {%>
+      <a href="?page=<%=nextPage%>">next page</a>
+      <% } %>
+    </div>
     
     <script src="/public/js/message.js"></script>    
     <script>

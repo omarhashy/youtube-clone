@@ -138,7 +138,9 @@ exports.getSearch = async (req, res, next) => {
     }
     const context = {
       query: query,
-      videoArray: videos.map(videosFilter),
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
       page: page,
     };
 
@@ -202,6 +204,38 @@ exports.postLike = async (req, res, next) => {
     });
   } catch (err) {
     await t.rollback();
+    next(err);
+  }
+};
+
+module.exports.getLikedVideos = async (req, res, next) => {
+  try {
+    const page = req.query.page ?? 1;
+    const limit = 10;
+    const likes = await Like.findAll({
+      where: {
+        channelId: req.channelId,
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+
+    const videos = await Promise.all(
+      likes.map(async (like) => {
+        const video = await Video.findByPk(like.videoId);
+        return video;
+      })
+    );
+
+    const context = {
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+    };
+
+    return res.status(200).json(context);
+  } catch (err) {
     next(err);
   }
 };

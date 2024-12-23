@@ -5,7 +5,6 @@ const { format } = require("date-fns");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
 
-
 exports.getIndex = (req, res, next) => {
   context = {
     pageTile: "Home",
@@ -22,12 +21,58 @@ exports.getSubscriptions = (req, res, next) => {
   res.status(200).render("feed/video-list.ejs", context);
 };
 
-exports.getLiked = (req, res, next) => {
-  context = {
-    pageTile: "Liked",
-    PageHeader: "Liked videos",
-  };
-  res.status(200).render("feed/video-list.ejs", context);
+exports.getLiked = async (req, res, next) => {
+  try {
+    const page = +req.query.page || 1;
+    const limit = 10;
+    const likes = await Like.findAll({
+      where: {
+        channelId: req.channelId,
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+    if (likes.length == 0) {
+      return next();
+    }
+
+    const videos = await Promise.all(
+      likes.map(async (like) => {
+        const video = await Video.findByPk(like.videoId);
+        return video;
+      })
+    );
+
+    const rows = await Like.count({
+      where: {
+        channelId: req.channelId,
+      },
+    });
+
+    let nextPage;
+    let previousPage;
+    if (limit * page < rows) {
+      nextPage = page + 1;
+    }
+    if (page > 1) {
+      previousPage = page - 1;
+    }
+    const context = {
+      currentPage: page,
+      previousPage: previousPage,
+      nextPage: nextPage,
+      pageTile: "Liked",
+      PageHeader: "Liked Videos",
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+    };
+
+    return res.status(200).render("feed/video-list.ejs", context);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getChannel = async (req, res, next) => {
@@ -61,6 +106,9 @@ exports.getChannel = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
+    if (videos.length == 0) {
+      return next();
+    }
     let nextPage;
     let previousPage;
     if (limit * page < rows) {
@@ -166,7 +214,28 @@ exports.getSearch = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
+    if (videos.length == 0) {
+      return next();
+    }
+
+    const rows = await Video.count({
+      where: {
+        [Op.or]: {
+          title: {
+            [Op.like]: `%${query}%`,
+          },
+          description: {
+            [Op.like]: `%${query}%`,
+          },
+        },
+      },
+    });
+
     const context = {
+      previousPage: false,
+      nextPage: false,
+      search: true,
+      currentPage: page,
       query: query,
       videoArray: await Promise.all(
         videos.map((video) => videosFilter(video, true))
@@ -175,6 +244,13 @@ exports.getSearch = async (req, res, next) => {
       pageTile: `Search`,
       PageHeader: `Search results for "${query}"`,
     };
+
+    if (limit * page < rows) {
+      context.nextPage = page + 1 + "&query=" + query;
+    }
+    if (page > 1) {
+      context.previousPage = page - 1 + "&query=" + query;
+    }
 
     return res.render("feed/video-list.ejs", context);
   } catch (err) {
