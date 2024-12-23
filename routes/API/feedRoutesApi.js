@@ -5,6 +5,7 @@ const authenticationMiddlewares = require("../../middlewares/authentication");
 
 const router = express.Router();
 
+router.get("/popular", feedController.getPopularVideos);
 router.get("/channel/:channelHandel", feedController.getChannel);
 router.get("/video/:videoId", feedController.getVideo);
 router.get("/search", feedController.getSearch);

@@ -5,6 +5,27 @@ const Like = require("../../models/like");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
 
+exports.getPopularVideos = async (req, res, next) => {
+  try {
+    const videos = await Video.findAll({
+      limit: 10,
+      order: [
+        [sequelize.literal('"likesCounter" + "commentsCounter"'), "DESC"],
+      ],
+    });
+    context = {
+      pageTile: "Home",
+      PageHeader: "Popular videos",
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+    };
+    res.status(200).json(context);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getChannel = async (req, res, next) => {
   try {
     const page = req.query.page ?? 1;

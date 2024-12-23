@@ -4,13 +4,29 @@ const Like = require("../../models/like");
 const { format } = require("date-fns");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
+const sequelize = require("../../config/database");
 
-exports.getIndex = (req, res, next) => {
-  context = {
-    pageTile: "Home",
-    PageHeader: "Popular videos",
-  };
-  res.status(200).render("feed/video-list.ejs", context);
+exports.getIndex = async (req, res, next) => {
+  try {
+    const videos = await Video.findAll({
+      limit: 10,
+      order: [
+        [sequelize.literal('"likesCounter" + "commentsCounter"'), "DESC"],
+      ],
+    });
+    context = {
+      pageTile: "Home",
+      PageHeader: "Popular videos",
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+      previousPage: false,
+      nextPage: false,
+    };
+    res.status(200).render("feed/video-list.ejs", context);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getSubscriptions = (req, res, next) => {
