@@ -20,6 +20,7 @@ module.exports = async (video, addChannelInfo = false) => {
       ...channelRest
     } = channel.dataValues;
     channelRest.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
+    channelRest.channelUrl = `/channel/${channel.handle}`;
     rest.channelInfo = channelRest;
   }
 

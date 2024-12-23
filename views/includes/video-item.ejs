@@ -1,11 +1,18 @@
 <!-- video start -->
 <div class="video-container">
   <div class="channel-info">
-    <img
-      src="<%= (video.channelInfo || channelInfo).channelPictureUrl  %>"
-      alt="channel image"
-    />
-    <h2><%=(video.channelInfo || channelInfo).name%></h2>
+    <a href="<%= (video.channelInfo || channelInfo).channelUrl  %>">
+      <img
+        src="<%= (video.channelInfo || channelInfo).channelPictureUrl  %>"
+        alt="channel image"
+      />
+    </a>
+    <a
+      style="color: black; text-decoration: none"
+      href="<%= (video.channelInfo || channelInfo).channelUrl  %>"
+    >
+      <h2><%=(video.channelInfo || channelInfo).name%></h2>
+    </a>
   </div>
   <div class="video-info">
     <a href="<%= video.videoUrl %>">
@@ -35,9 +42,13 @@
         <a style="color: black" href="/creator/edit-video/<%=video.id%>"
           >edit</a
         >
-        <form style="width: min-content; margin-bottom: 0;" action="\creator\delete-video\<%=video.id%>" method="post">
+        <form
+          style="width: min-content; margin-bottom: 0"
+          action="\creator\delete-video\<%=video.id%>"
+          method="post"
+        >
           <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
-          <input style="margin-top: 1rem;" type="submit" value="delete" />
+          <input style="margin-top: 1rem" type="submit" value="delete" />
         </form>
       </div>
       <%}%>
