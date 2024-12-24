@@ -7,7 +7,7 @@ exports.get500 = (error, req, res, next) => {
   console.error(error);
   if (error.message === "Unsupported file type") {
     res.status(403).send("<h1>Unsupported file type</h1>");
-    return;
+     return;
   }
   if (error.message.includes("CSRF")) {
     res.status(403).send("<h1>invalid csrf token</h1>");
