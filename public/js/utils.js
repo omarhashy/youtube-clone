@@ -10,3 +10,15 @@ const setLikeButton = (isLiked) => {
     button.style.color = "black";
   }
 };
+
+
+const setSubscribeButton = (isSubscribed) => {
+  const button = document.getElementById("subscribeButton");
+  if (isSubscribed) {
+    button.textContent = "Unsubscribe";
+    button.style.backgroundColor = "black";
+  } else {
+    button.textContent = "Subscribe";
+    button.style.backgroundColor = "rgb(185, 6, 6)";
+  }
+};

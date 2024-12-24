@@ -1,6 +1,7 @@
 const Video = require("../../models/video");
 const Channel = require("../../models/channel");
 const Like = require("../../models/like");
+const Subscription = require("../../models/subscription");
 const { format } = require("date-fns");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
@@ -29,12 +30,59 @@ exports.getIndex = async (req, res, next) => {
   }
 };
 
-exports.getSubscriptions = (req, res, next) => {
-  context = {
-    pageTile: "Subscriptions",
-    PageHeader: "Subscriptions",
-  };
-  res.status(200).render("feed/video-list.ejs", context);
+exports.getSubscriptions = async (req, res, next) => {
+  try {
+    const page = +req.query.page || 1;
+    const limit = 10;
+
+    let subscriptions = await Subscription.findAll({
+      where: {
+        subscriber: req.channelId,
+      },
+      attributes: ["subscribed"],
+    });
+
+    subscriptions = subscriptions.map((sub) => sub.subscribed);
+
+    const videos = await Video.findAll({
+      where: {
+        channelId: { [Op.in]: subscriptions },
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+
+    const rows = await Video.count({
+      where: {
+        channelId: { [Op.in]: subscriptions },
+      },
+    });
+
+    let nextPage;
+    let previousPage;
+    if (limit * page < rows) {
+      nextPage = page + 1;
+    }
+    if (page > 1) {
+      previousPage = page - 1;
+    }
+
+    const context = {
+      currentPage: page,
+      previousPage: previousPage,
+      nextPage: nextPage,
+      pageTile: "Subscriptions",
+      PageHeader: "Subscriptions",
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+    };
+
+    return res.status(200).render("feed/video-list.ejs", context);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getLiked = async (req, res, next) => {
@@ -49,9 +97,6 @@ exports.getLiked = async (req, res, next) => {
       offset: (page - 1) * limit,
       order: [["createdAt", "DESC"]],
     });
-    if (likes.length == 0) {
-      return next();
-    }
 
     const videos = await Promise.all(
       likes.map(async (like) => {
@@ -122,9 +167,6 @@ exports.getChannel = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
-    if (videos.length == 0) {
-      return next();
-    }
     let nextPage;
     let previousPage;
     if (limit * page < rows) {
@@ -155,6 +197,20 @@ exports.getChannel = async (req, res, next) => {
       videoArray: await Promise.all(videos.map(videosFilter)),
     };
     context.myChannel = req.channelId == channel.id;
+    context.isLoggedIn = req.isLoggedIn;
+
+    if (!context.myChannel && req.isLoggedIn) {
+      context.isSubscribed = false;
+      const subscription = await Subscription.findOne({
+        where: {
+          subscriber: req.channelId,
+          subscribed: channel.id,
+        },
+      });
+      if (subscription) {
+        context.isSubscribed = true;
+      }
+    }
     return res.status(200).render("feed/channel.ejs", context);
   } catch (err) {
     next(err);
@@ -229,10 +285,6 @@ exports.getSearch = async (req, res, next) => {
       offset: (page - 1) * limit,
       order: [["createdAt", "DESC"]],
     });
-
-    if (videos.length == 0) {
-      return next();
-    }
 
     const rows = await Video.count({
       where: {

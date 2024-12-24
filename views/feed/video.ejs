@@ -64,7 +64,9 @@
     <script src="/public/js/utils.js"></script>
     <script>
       showMessages(<%-errorMessages%> , <%-successMessages%> );
-      setLikeButton(<%=isLiked%>);
+      <%if(isLoggedIn){%>
+        setLikeButton(<%=isLiked%>);
+      <%}%>  
     </script>
   </body>
 </html>

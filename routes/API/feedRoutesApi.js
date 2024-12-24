@@ -14,11 +14,21 @@ router.get(
   authenticationMiddlewares.requireLogin,
   feedController.getLikedVideos
 );
-
+router.get(
+  "/feed/subscriptions",
+  authenticationMiddlewares.requireLogin,
+  feedController.getSubscriptions
+);
 router.post(
   "/like",
   authenticationMiddlewares.requireLogin,
   feedController.postLike
+);
+
+router.post(
+  "/subscribe",
+  authenticationMiddlewares.requireLogin,
+  feedController.postSubscribe
 );
 
 module.exports = router;

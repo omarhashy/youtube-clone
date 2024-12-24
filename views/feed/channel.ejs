@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/public/css/channel.css" />
   </head>
   <body>
+    <script src="/public/js/apis.js"></script>
+    <script src="/public/js/message.js"></script>
     <%- include('../includes/navigation.ejs') %>
     <div id="content">
       <div id="channel-info-container">
@@ -19,10 +21,10 @@
             @<%=channelInfo.handle%> • <%=channelInfo.subscribersCounter%>
             subscribers
           </p>
-
+          <% if(isLoggedIn){ %>
           <div id="subscribe-button-container">
             <%if(!myChannel) {%>
-            <button class="subscribe-button">subscribe</button>
+            <button id = "subscribeButton" class="subscribe-button" onclick="submitSubscribe('<%=channelInfo.handle%>')">subscribe</button>
             <%}else{%>
             <a
               style="margin-top: 1rem; color: black"
@@ -32,6 +34,8 @@
             </a>
             <%}%>
           </div>
+          <% } %>
+
         </div>
       </div>
       <hr />
@@ -55,9 +59,13 @@
       <a href="?page=<%=nextPage%>">next page</a>
       <% } %>
     </div>
-    <script src="/public/js/message.js"></script>
+    <script src="/public/js/utils.js"></script>
     <script>
       showMessages(<%-errorMessages%> , <%-successMessages%> );
+      <%if(isLoggedIn && !myChannel){%>
+      setSubscribeButton(<%=isSubscribed%>);
+      <%}%>
     </script>
+
   </body>
 </html>

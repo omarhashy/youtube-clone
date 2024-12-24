@@ -8,6 +8,7 @@ module.exports = async (video, addChannelInfo = false) => {
   rest.createdAt = format(rest.createdAt, "dd/MM/yyyy hh:mma");
   rest.videoUrl = `/video/${video.id}`;
   if (addChannelInfo) {
+    
     const channel = await Channel.findByPk(video.channelId);
     const {
       id,

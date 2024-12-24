@@ -4,6 +4,7 @@ const sequelize = require("../../config/database");
 const Like = require("../../models/like");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
+const Subscription = require("../../models/subscription");
 
 exports.getPopularVideos = async (req, res, next) => {
   try {
@@ -81,6 +82,20 @@ exports.getChannel = async (req, res, next) => {
         return rest;
       }),
     };
+    context.myChannel = req.channelId == channel.id;
+    context.isLoggedIn = req.isLoggedIn;
+    if (!context.myChannel && req.isLoggedIn) {
+      context.isSubscribed = false;
+      const subscription = await Subscription.findOne({
+        where: {
+          subscriber: req.channelId,
+          subscribed: channel.id,
+        },
+      });
+      if (subscription) {
+        context.isSubscribed = true;
+      }
+    }
     return res.json(context);
   } catch (err) {
     next(err);
@@ -154,9 +169,7 @@ exports.getSearch = async (req, res, next) => {
       offset: (page - 1) * limit,
       order: [["createdAt", "DESC"]],
     });
-    if (!videos.length) {
-      return next();
-    }
+
     const context = {
       query: query,
       videoArray: await Promise.all(
@@ -175,6 +188,9 @@ exports.postLike = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const videoId = req.body.videoId;
+    if (!videoId) {
+      return res.status(400).json({ message: "invalid request" });
+    }
     const video = await Video.findByPk(videoId);
 
     if (!video) {
@@ -191,10 +207,13 @@ exports.postLike = async (req, res, next) => {
 
     if (like) {
       video.likesCounter--;
-      await like.destroy({ transaction: t });
-      await video.save({ transaction: t });
+      await Promise.all([
+        like.destroy({ transaction: t }),
+        video.save({ transaction: t }),
+      ]);
       await t.commit();
-      return res.status(200).json({
+
+      return res.status(201).json({
         likesCounter: video.likesCounter,
         channelId: req.channelId,
         videoId: video.id,
@@ -212,9 +231,8 @@ exports.postLike = async (req, res, next) => {
       },
       { transaction: t }
     );
-    const videoP = video.save({ transaction: t });
 
-    await Promise.all([like, videoP]);
+    await Promise.all([like, video.save({ transaction: t })]);
     await t.commit();
     return res.status(200).json({
       likesCounter: video.likesCounter,
@@ -255,6 +273,101 @@ module.exports.getLikedVideos = async (req, res, next) => {
       ),
     };
 
+    return res.status(200).json(context);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postSubscribe = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    if (
+      !req.body.channelHandel ||
+      req.body.channelHandel === req.channelHandel
+    ) {
+      return res.status(400).json({ message: "invalid request" });
+    }
+    const channelHandle = req.body.channelHandel;
+    const channel = await Channel.findOne({
+      where: {
+        handle: channelHandle,
+      },
+    });
+    if (!channel || !channel.verified) {
+      return res.status(400).json({ message: "invalid request" });
+    }
+
+    let subscription = await Subscription.findOne({
+      where: {
+        subscriber: req.channelId,
+        subscribed: channel.id,
+      },
+    });
+    if (subscription) {
+      channel.subscribersCounter--;
+      await Promise.all([
+        channel.save({ transaction: t }),
+        subscription.destroy({ transaction: t }),
+      ]);
+      await t.commit();
+      return res.status(201).json({
+        message: "subscription removed successfully",
+        subscriber: req.channelHandle,
+        subscribed: channelHandle,
+        isSubscribed: false,
+      });
+    }
+    subscription = Subscription.create(
+      {
+        subscriber: req.channelId,
+        subscribed: channel.id,
+      },
+      { transaction: t }
+    );
+    channel.subscribersCounter++;
+    await Promise.all([subscription, channel.save({ transaction: t })]);
+    await t.commit();
+    return res.status(200).json({
+      message: "subscription added successfully",
+      subscriber: req.channelHandle,
+      subscribed: channelHandle,
+      isSubscribed: true,
+      subscribersCounter: channel.subscribersCounter,
+    });
+  } catch (err) {
+    await t.rollback();
+    next(err);
+  }
+};
+
+exports.getSubscriptions = async (req, res, next) => {
+  try {
+    const page = +req.query.page || 1;
+    const limit = 10;
+
+    let subscriptions = await Subscription.findAll({
+      where: {
+        subscriber: req.channelId,
+      },
+      attributes: ["subscribed"],
+    });
+
+    subscriptions = subscriptions.map((sub) => sub.subscribed);
+
+    const videos = await Video.findAll({
+      where: {
+        channelId: { [Op.in]: subscriptions },
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+    });
+    context = {
+      videoArray: await Promise.all(
+        videos.map((video) => videosFilter(video, true))
+      ),
+    };
     return res.status(200).json(context);
   } catch (err) {
     next(err);
