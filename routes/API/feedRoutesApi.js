@@ -19,6 +19,9 @@ router.get(
   authenticationMiddlewares.requireLogin,
   feedController.getSubscriptions
 );
+
+router.get("/comments/:videoId", feedController.getComments);
+
 router.post(
   "/like",
   authenticationMiddlewares.requireLogin,
@@ -29,6 +32,12 @@ router.post(
   "/subscribe",
   authenticationMiddlewares.requireLogin,
   feedController.postSubscribe
+);
+
+router.post(
+  "/comment",
+  authenticationMiddlewares.requireLogin,
+  feedController.postComment
 );
 
 module.exports = router;

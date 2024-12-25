@@ -30,7 +30,7 @@ function showError(message) {
   setTimeout(() => {
     errorDiv.style.opacity = "0";
     setTimeout(() => errorDiv.remove(), 500);
-  }, 10000);
+  }, 2000);
 }
 
 function showSuccess(message) {
@@ -65,7 +65,7 @@ function showSuccess(message) {
   setTimeout(() => {
     successDiv.style.opacity = "0";
     setTimeout(() => successDiv.remove(), 500);
-  }, 10000);
+  }, 2000);
 }
 
 function showMessages(errors, successes) {

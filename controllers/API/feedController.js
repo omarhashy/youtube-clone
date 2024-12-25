@@ -5,6 +5,7 @@ const Like = require("../../models/like");
 const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
 const Subscription = require("../../models/subscription");
+const Comment = require("../../models/comment");
 
 exports.getPopularVideos = async (req, res, next) => {
   try {
@@ -371,5 +372,90 @@ exports.getSubscriptions = async (req, res, next) => {
     return res.status(200).json(context);
   } catch (err) {
     next(err);
+  }
+};
+
+exports.postComment = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const videoId = req.body.videoId;
+    const commentContent = req.body.comment.trim();
+    if (commentContent === "") {
+      const error = new Error("comment can't be empty");
+      error.status = 400;
+      throw error;
+    }
+    if (!videoId || !commentContent) {
+      return res.status(400).json({ message: "invalid request" });
+    }
+    const video = await Video.findByPk(videoId);
+    if (!video) {
+      next();
+      return;
+    }
+    video.commentsCounter++;
+    const comment = Comment.create(
+      {
+        content: commentContent,
+        videoId: videoId,
+        channelId: req.channelId,
+      },
+      { transaction: t }
+    );
+    await Promise.all([comment, video.save({ transaction: t })]);
+    await t.commit();
+    return res.status(200).json({
+      message: "comment added successfully",
+      comment: await (async () => {
+        const channel = await Channel.findByPk((await comment).channelId, {
+          attributes: ["name", "handle", "channelPictureFile"],
+        });
+        const { channelId, updatedAt, ...rest } = (await comment).dataValues;
+        // console.log(comment.channelId);
+
+        const { channelPictureFile, ...channelInfo } = channel.dataValues;
+        rest.channelInfo = channelInfo;
+        rest.channelInfo.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
+        return rest;
+      })(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getComments = async (req, res, next) => {
+  try {
+    const videoId = req.params.videoId;
+    const page = +req.query.page || 1;
+    const limit = 5;
+    const comments = await Comment.findAll({
+      where: {
+        videoId: videoId,
+      },
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Channel,
+          attributes: ["name", "handle", "channelPictureFile"],
+        },
+      ],
+    });
+
+    return res.status(200).json({
+      comments: comments.map((comment) => {
+        // return comment
+        const { channel, updatedAt, ...rest } = comment.dataValues;
+        const { channelPictureFile, ...channelInfo } = channel.dataValues;
+        rest.channelInfo = channelInfo;
+        rest.channelInfo.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
+
+        return rest;
+      }),
+    });
+  } catch (error) {
+    next(error);
   }
 };

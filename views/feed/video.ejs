@@ -44,29 +44,27 @@
         </div>
         <div class="comment-form">
           <textarea
-            id="comment"
+            id="commentTextarea"
             placeholder="Write your comment here..."
           ></textarea>
-          <button class="comment-button">Comment</button>
+          <button onclick="submitComment(<%=videoId%>)" id="commentSubmitButton" class="comment-button">
+            Comment
+          </button>
         </div>
       </div>
       <hr />
       <div id="comments-box">
-        <!-- COMMENT ITEM -->
-        <%- include('../includes/comment-item.ejs') %> <%-
-        include('../includes/comment-item.ejs') %> <%-
-        include('../includes/comment-item.ejs') %> <%-
-        include('../includes/comment-item.ejs') %>
-        <!-- COMMENT ITEM -->
+
       </div>
     </div>
 
     <script src="/public/js/utils.js"></script>
     <script>
+      var videoId = <%=videoId%>; 
       showMessages(<%-errorMessages%> , <%-successMessages%> );
       <%if(isLoggedIn){%>
         setLikeButton(<%=isLiked%>);
-      <%}%>  
+      <%}%>
     </script>
   </body>
 </html>
