@@ -13,7 +13,7 @@ A backend-focused educational project built while learning Express.js, implement
 ## Features
 ### User Management
 - User registration and authentication
-- JWT and session handling
+- session handling
 - Secure password storage
 
 ### Video Operations
