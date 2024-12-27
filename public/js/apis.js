@@ -134,4 +134,5 @@ const handleScroll = async () => {
   }
 };
 
+
 window.addEventListener("scroll", handleScroll);

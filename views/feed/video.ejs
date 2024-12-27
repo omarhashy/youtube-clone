@@ -42,29 +42,41 @@
           </button>
           <% } %>
         </div>
+        <% if(isLoggedIn) {%>
+
         <div class="comment-form">
           <textarea
             id="commentTextarea"
             placeholder="Write your comment here..."
           ></textarea>
-          <button onclick="submitComment(<%=videoId%>)" id="commentSubmitButton" class="comment-button">
+          <button
+            onclick="submitComment(<%=videoId%>)"
+            id="commentSubmitButton"
+            class="comment-button"
+          >
             Comment
           </button>
         </div>
+        <% } %>
       </div>
       <hr />
-      <div id="comments-box">
-
-      </div>
+      <div id="comments-box"></div>
     </div>
 
     <script src="/public/js/utils.js"></script>
     <script>
-      var videoId = <%=videoId%>; 
+      var videoId = <%=videoId%>;
       showMessages(<%-errorMessages%> , <%-successMessages%> );
       <%if(isLoggedIn){%>
         setLikeButton(<%=isLiked%>);
       <%}%>
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/public/js/socket.js"></script>
+    <script>
+      loadComments(videoId)
+      openSocket(<%=videoId%>)
     </script>
   </body>
 </html>

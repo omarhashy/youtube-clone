@@ -25,6 +25,7 @@ const feedRoutesApi = require("./routes/API/feedRoutesApi");
 const authRoutes = require("./routes/webApp/authRoutes");
 const feedRoutes = require("./routes/webApp/feedRoutes");
 const creatorRoutes = require("./routes/webApp/creatorRoutes");
+const { vi } = require("date-fns/locale");
 
 const app = express();
 
@@ -96,8 +97,15 @@ app.use(errorController.get500);
     );
     // await sequelize.sync({ force: true });
     await sequelize.sync();
-    app.listen(PORT, () => {
+    const appServer = app.listen(PORT, () => {
       console.log("Connected to server");
+    });
+
+    const io = require("./socket").init(appServer);
+
+    io.on("connection", (socket) => {
+      const videoId = socket.handshake.query.videoId;
+      socket.join(`Room${videoId}`);
     });
   } catch (error) {
     console.error(error);

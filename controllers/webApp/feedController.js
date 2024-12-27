@@ -283,7 +283,9 @@ exports.getSearch = async (req, res, next) => {
       },
       limit: limit,
       offset: (page - 1) * limit,
-      order: [["createdAt", "DESC"]],
+      order: [
+        [sequelize.literal('"likesCounter" + "commentsCounter"'), "DESC"],
+      ],
     });
 
     const rows = await Video.count({

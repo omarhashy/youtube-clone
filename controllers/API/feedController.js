@@ -6,6 +6,7 @@ const { Op } = require("sequelize");
 const videosFilter = require("../../utilities/videosFilter");
 const Subscription = require("../../models/subscription");
 const Comment = require("../../models/comment");
+const IO = require("../../socket");
 
 exports.getPopularVideos = async (req, res, next) => {
   try {
@@ -168,7 +169,9 @@ exports.getSearch = async (req, res, next) => {
       },
       limit: limit,
       offset: (page - 1) * limit,
-      order: [["createdAt", "DESC"]],
+      order: [
+        [sequelize.literal('"likesCounter" + "commentsCounter"'), "DESC"],
+      ],
     });
 
     const context = {
@@ -404,7 +407,8 @@ exports.postComment = async (req, res, next) => {
     );
     await Promise.all([comment, video.save({ transaction: t })]);
     await t.commit();
-    return res.status(200).json({
+
+    const context = {
       message: "comment added successfully",
       comment: await (async () => {
         const channel = await Channel.findByPk((await comment).channelId, {
@@ -418,7 +422,12 @@ exports.postComment = async (req, res, next) => {
         rest.channelInfo.channelPictureUrl = `/files/images/${channel.channelPictureFile}`;
         return rest;
       })(),
-    });
+    };
+
+    const io = IO.getIO();
+    io.in(`Room${videoId}`).emit("commentAdded", context);
+
+    return res.status(200).json(context);
   } catch (error) {
     next(error);
   }
